@@ -15,7 +15,7 @@ We used K-face dataset, which can be downloaded from https://aihub.or.kr.
 * preprocessing_and_modeling.py
 
 ### Implementation of FM:
-* fm.py (*Checkpoints_FB*)
+* fm.py (*/Checkpoints_FB*)
 
 ### Plotting figures:
 * visualizing_Fig.2.py
