@@ -1,5 +1,5 @@
 """
-Running this file trains ANNs described in the paper.
+Running this file makes visualizions of results in the paper.
 
 *Preview of this code:
 - Packages

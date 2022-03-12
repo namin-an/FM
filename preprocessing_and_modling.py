@@ -4,10 +4,8 @@ Running this file trains ANNs described in the paper.
 *Preview of this code:
 - Packages
 
-- Fig. 2a (Fig. S5a, Fig. S6a)
-- Fig. 2b (Fig. S5c, Fig. S5d, Fig. S6c, Fig. S6d)
-- Fig. 2c (Fig. S5e, Fig. S5f, Fig. S6e, Fig. S6f, Fig. S6g)
-- Fig. 2d (Fig. S5g, Fig. S6h, Fig. S6i)
+- Loading a data
+- Training ANNs
 
 """
 
