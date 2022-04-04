@@ -12,15 +12,15 @@ We used K-face dataset, which can be downloaded from https://aihub.or.kr.
 
 ## Codes
 ### Training models:
-* preprocessing_and_modeling.py
+* train_anns.py (load_data.py)
 
 ### Implementation of FM:
-* fm.py (*/Checkpoints_FB*)
+* fm.py
 
 ### Plotting figures:
-* visualizing_Fig.2.py
-* visualizing_Fig.3.py
-* visualizing_Fig.4.py
+* visualizing_fig2.py
+* visualizing_fig3.py
+* visualizing_fig4.py
 
 ### Adaptations:
 * Grad-CAM for XAI visualizations (*/pytorch_grad_cam*) from https://github.com/jacobgil/pytorch-grad-cam. <br />
@@ -28,5 +28,5 @@ We used K-face dataset, which can be downloaded from https://aihub.or.kr.
 
 ## Example run
 ```
-TBA
+python3 test.py
 ```
