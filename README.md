@@ -8,8 +8,11 @@ PyTorch (1.9.0), NumPy (1.20.3), matplotlib (3.4.3), pandas (1.3.2), sklearn (0.
 We used K-face dataset, which can be downloaded from https://aihub.or.kr.
 
 ## Codes
+### Loading data:
+* loadData.py
+
 ### Training models:
-* trainANNs.py (loadData.py)
+* trainANNs.py
 
 ### Implementation of FM:
 * fm.py
