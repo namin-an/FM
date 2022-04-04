@@ -1,19 +1,3 @@
-"""
-Running this file makes visualizions of results in the paper.
-
-*Preview of this code:
-- Packages
-
-- Getting ready ...
-- FM
-- FM algorithm
-"""
-
-
-
-#%%
-# Packages
-
 import datetime
 date = datetime.datetime.now()
 print(f'Today is Happy{date: %A, %d, %m, %Y}.', '\n')
@@ -41,7 +25,6 @@ from PIL import Image
 import cv2 as cv
 from sklearn.metrics import confusion_matrix, roc_curve, auc, roc_auc_score, classification_report
 from sklearn.utils import shuffle
-
 
 
 #%%
