@@ -1,8 +1,5 @@
 # Feedback Mechanism (FM) in Machine Learning to Reduce Cost of Human Psychophysical Test of Prosthetic Vision
-
 Na Min An, Hyeonhee Roh, Sein Kim, Jae Hun Kim, and Maesoon Im
-
-EMBS 1 Page Research Abstract (*/abstract/2302.pdf*)
 
 ## Dependencies
 PyTorch (1.9.0), NumPy (1.20.3), matplotlib (3.4.3), pandas (1.3.2), sklearn (0.23.2), skimage (0.17.2).
