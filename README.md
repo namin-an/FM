@@ -9,7 +9,7 @@ We used K-face dataset, which can be downloaded from https://aihub.or.kr.
 
 ## Codes
 ### Training models:
-* train_anns.py (load_data.py)
+* trainANNs.py (loadData.py)
 
 ### Implementation of FM:
 * fm.py
