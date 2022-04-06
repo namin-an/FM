@@ -1,6 +1,5 @@
 import datetime
-date = datetime.datetime.now()
-print(f'Today is Happy{date: %A, %d, %m, %Y}.', '\n')
+# date = datetime.datetime.now()
 import os
 import gc
 import time
@@ -44,11 +43,6 @@ from torch.autograd import Variable
 from torch.nn import Linear, ReLU, CrossEntropyLoss, MultiMarginLoss, Sequential, Conv2d, MaxPool2d, Module, Softmax, BatchNorm2d, Dropout, AdaptiveAvgPool2d
 from torch.optim import Adam, SGD
 
-print(torch.__version__)
-print(torch.cuda.get_device_name(0)) # my GPU
-print(torch.cuda.is_available()) 
-print(torch.version.cuda)
-
 from mypackages import pytorchtools 
 from loadData import loadData, visualizeData
 from trainANNs import beginModeling
@@ -66,7 +60,6 @@ if __name__ == 'main':
     parser.add_argument('--r', type=int, default=4) # 2, 4, 16
     parser.add_argument('--meta_path', type=str, default='C:\\Users\\user\\Desktop\\210827_ANNA_Removing_uncontaminated_data.csv')
     args = parser.parse_args()
-    # print('args', args)
 
     model_type = args.args.model_type1 + args.args.model_type2
     df = pd.read_csv(args.meta_path)
@@ -156,7 +149,6 @@ if __name__ == 'main':
                 os.makedirs(preprocessed_data_path, exist_ok=True) 
                 os.makedirs(model_path, exist_ok=True)
                 os.makedirs(high_analysis_path, exist_ok=True)
-                # os.makedirs(low_analysis_path, exist_ok=True)
 
                 model_file1 = os.path.join(model_path, f'Model_{args.model_type1}{args.finetune}.{ext_name1}')
                 model_file2 = os.path.join(model_path, f'Model_{args.model_type2}{args.finetune}.{ext_name2}')
@@ -167,13 +159,9 @@ if __name__ == 'main':
                 low_csv_file = os.path.join(low_analysis_path, f'Classification Report_{args.model_type1}_{args.model_type2}.csv') # 안 씀 
                 auc_info_file = os.path.join(low_analysis_path, f'TP_FP_AUC_Dictionary_{args.model_type1}_{args.model_type2}.csv') # 안 씀
                 roc_file = os.path.join(low_analysis_path, f'ROC_{args.model_type1}_{args.model_type2}.png') # 안 씀
-                # if args.model_type2 == 'SVC':
-                #     check_file = low_csv_file
-                # else:
-                #     check_file = auc_info_file
                 check_file = high_csv_file
 
-                if os.path.isfile(check_file) and xai == 'no': # 특정 조합에 대해서 맨 마지막에 저장될 파일이 이미 존재한다면,
+                if os.path.isfile(check_file) and args.xai == 'no': # 특정 조합에 대해서 맨 마지막에 저장될 파일이 이미 존재한다면,
                     pass
                 else:
                     print(f'\n START {m}th set {n}th comb (seed{seed}): comb{com_list[n]} \n')
@@ -181,16 +169,10 @@ if __name__ == 'main':
                     Xtrain, ytrain, _, old_uniq_labels, tr_unique_items = loadData(com_list[n], 'train') 
                     Xtest, ytest, file_path_list, old_uniq_labels2, test_unique_items = loadData(com_list[n], 'test')
                     assert set(old_uniq_labels) == set(old_uniq_labels2)
-
-                    # visualizeData(Xtrain, ytrain, Xtest, ytest)
-                    
                     assert set(tr_unique_items) == set(test_unique_items)
                     unique_labels = tr_unique_items
 
                     """2. Modeling"""
-                    # print(gc.collect())
-                    # print(torch.cuda.empty_cache())
-                    # print(gc.collect())
                     instance = beginModeling(n, args.model_type1, args.model_type2, Xtrain, ytrain, Xtest, ytest, unique_labels, model_file1, model_file2, high_csv_file, low_csv_file, auc_info_file, checkpoint_file, earlystop_file, roc_file) # INITIALIZATION
 
                     # method 호출
