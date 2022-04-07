@@ -61,6 +61,7 @@ if __name__ == 'main':
     parser.add_argument('--meta_path', type=str, default='C:\\Users\\user\\Desktop\\210827_ANNA_Removing_uncontaminated_data.csv')
     parser.add_argument('--train_path', type=str, default='E:\\ANNA_INTERN\\Middle_Resolution_137_unzipped_parcropped_128_removed_train')
     parser.add_argument('--test_path', type=str, default='E:\\ANNA_INTERN\\Middle_Resolution_137_unzipped_parcropped_128')
+    parser.add_argument('--ft_path', type=str, default='E:\\ANNA_INTERN\\Middle_Resolution_137_unzipped_parcropped_128_removed_train_finetune')
     args = parser.parse_args()
 
     model_type = args.model_type1 + args.model_type2
@@ -165,8 +166,8 @@ if __name__ == 'main':
                 else:
                     print(f'\n START {m}th set {n}th comb (seed{seed}): comb{com_list[n]} \n')
                     """1. Loading a data"""
-                    Xtrain, ytrain, _, old_uniq_labels, tr_unique_items = loadData(com_list[n], 'train') 
-                    Xtest, ytest, file_path_list, old_uniq_labels2, test_unique_items = loadData(com_list[n], 'test')
+                    Xtrain, ytrain, _, old_uniq_labels, tr_unique_items = loadData(com_list[n], 'train', args.train_path, test_path, args.ft_path, args.finetune, args.test_type, accessory_list, light_list, expression_list, camera_list, seed, args.r, args.model_type2)
+                    Xtest, ytest, file_path_list, old_uniq_labels2, test_unique_items = loadData(com_list[n], 'test', args.train_path, test_path, args.ft_path, args.finetune, args.test_type, accessory_list, light_list, expression_list, camera_list, seed, args.r, args.model_type2)
                     assert set(old_uniq_labels) == set(old_uniq_labels2)
                     assert set(tr_unique_items) == set(test_unique_items)
                     unique_labels = tr_unique_items
