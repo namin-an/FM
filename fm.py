@@ -1,11 +1,13 @@
 import datetime
-date = datetime.datetime.now()
-print(f'Today is Happy{date: %A, %d, %m, %Y}.', '\n')
-
+# date = datetime.datetime.now()
 import os
+import gc
+import time
+import random
+from random import sample
+import itertools
+import argparse
 import math
-import random 
-import itertools 
 
 import numpy as np
 import pandas as pd
@@ -13,33 +15,47 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import imshow
 from matplotlib.lines import Line2D
-
 import scipy
 import scipy as sp
 from scipy import stats
-from scipy.stats import norm, wilcoxon, linregress # norm.cdf와 norm.ppf(percent point function, inverse of cdf-percentiles)은 역함수 관계
+from scipy.stats import norm, wilcoxon, linregress # norm.ppf: inverse of normal cdf
 import scipy.stats as sp
-
 from statannot import add_stat_annotation
 from PIL import Image
 import cv2 as cv
 from sklearn.metrics import confusion_matrix, roc_curve, auc, roc_auc_score, classification_report
 from sklearn.utils import shuffle
+import torch
+import torchvision
+import torch.nn as nn
+import torchvision.transforms as T
+import torch.nn.functional as F
+from torchvision.utils import make_grid, save_image
+from torch.utils.data import DataLoader, Dataset, random_split, TensorDataset
+from torch.autograd import Variable
+from torch.nn import Linear, ReLU, CrossEntropyLoss, MultiMarginLoss, Sequential, Conv2d, MaxPool2d, Module, Softmax, BatchNorm2d, Dropout, AdaptiveAvgPool2d
+from torch.optim import Adam, SGD
 
 
-#%%
-# Loading human and ANN data
+if __name__ == 'main':
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--args.finetune', type=str, default='') # 'ft', ''
+    parser.add_argument('--r', type=int, default=4) # 2, 4, 16
+    parser.add_argument('--human_data', type=str, default='E:\\ANNA_INTERN\\Human_Exp\\211202') 
+    parser.add_argument('--args.model_type1', type=str, default='opt') # 'PCA', 'PCA', 'PCA', '', '', '', '', '', '', '', '', '', ''
+    parser.add_argument('--args.model_type2', type=str, default='') # 'SVC2'(Old version) 'SVC', 'LR', 'CNN_LR', 'CNN_SVC', 'PIXEL_LR', 'PIXEL_SVC',
+    # 'CNN_ResNet', 'CNN_ResNet2', CNN_ResNet2_SVC', 'CNN_AlexNet', 'CNN_AlexNet2', 'CNN_AlexNet2_SVC', 'CNN_VggNet2', 'CNN_VggNet2_SVC'
+    parser.add_argument('--xai', type=str, default='no') # 'yes', 'no'
+    parser.add_argument('--args.finetune', type=str, default='') # 'ft', ''
+    parser.add_argument('--r', type=int, default=4) # 2, 4, 16
+    parser.add_argument('--meta_path', type=str, default='C:\\Users\\user\\Desktop\\210827_ANNA_Removing_uncontaminated_data.csv')
+    args = parser.parse_args()
 
-# Button
 type = 'opt' # 'opt' or 'elec'
 test_type = type
 
-# 사람 데이터
-human_data = 'E:\\ANNA_INTERN\\Human_Exp\\211202'
-# human_data = 'C:\\Users\\user\\Desktop\\Human_Exp\\211124'
-# human_data = 'C:\\Users\\user\\Desktop\\Human_Exp\\211118'
-# human_data = '/content/drive/MyDrive/Human_Exp/211118'
-# sel_ppl = [92, 93] # 정현, 서연
+
 
 if type == 'opt':
   sel_ppl = list(range(300, 309)) + list(range(400, 408)) + [611] # 18개
@@ -121,7 +137,6 @@ orig_mer_df = mer_df
 
 #%%
 # Getting ready...
-
 human_df = orig_human_df.copy()
 human_df = human_df.fillna(0)
 human_df['유저식별아이디'] = human_df['유저식별아이디'].astype(int)
@@ -241,7 +256,6 @@ mer_df3
 
 #%%
 # FM
-
 test_type_list = [type] #['opt', 'elec']
 model_type1_list = [''] #['PCA', 'PCA', '', '']
 model_type2_list = ['CNN_SVC'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
