@@ -37,17 +37,16 @@ from torch.nn import Linear, ReLU, CrossEntropyLoss, MultiMarginLoss, Sequential
 from torch.optim import Adam, SGD
 
 
-if __name__ == 'main':
-    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--test_type', type=str, default='opt') # 'opt' or 'elec'
-    parser.add_argument('--human_data', type=str, default='E:\\ANNA_INTERN\\Human_Exp\\211202') # 2, 4, 16
-    parser.add_argument('--machine_data', type=str, default='E:\\ANNA_INTERN\\Human_Exp\\211105_QAs_for_Set0_CNN_SVC_4classes_partial.csv') 
-    parser.add_argument('--meta_data', type=str, default='E:\\ANNA_INTERN\\210827_ANNA_Removing_uncontaminated_data.csv')
-    parser.add_argument('--r', type=int, default=4) # 2, 4, 16
-    args = parser.parse_args()
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+parser = argparse.ArgumentParser()
+parser.add_argument('--test_type', type=str, default='opt') # 'opt' or 'elec'
+parser.add_argument('--human_data', type=str, default='E:\\ANNA_INTERN\\Human_Exp\\211202') # 2, 4, 16
+parser.add_argument('--machine_data', type=str, default='E:\\ANNA_INTERN\\Human_Exp\\211105_QAs_for_Set0_CNN_SVC_4classes_partial.csv') 
+parser.add_argument('--meta_data', type=str, default='E:\\ANNA_INTERN\\210827_ANNA_Removing_uncontaminated_data.csv')
+parser.add_argument('--r', type=int, default=4) # 2, 4, 16
+args = parser.parse_args()
 
-# Human data
+""" Human data """
 if args.test_type == 'opt':
   sel_ppl = list(range(300, 309)) + list(range(400, 408)) + [611] # 18 participants
 elif args.test_type == 'elec': 
@@ -84,7 +83,8 @@ human_df.columns = list(range(80*n))
 plt.hist(human_df.values, density=True)
 plt.show()
 
-# Machine data
+
+""" Machine data """
 answer_df = pd.read_csv(args.machine_data)
 
 act_per_list, pix_list, gs_list, par_list = [], [], [], []
@@ -107,15 +107,14 @@ answer_df = answer_df.T
 
 orig_answer_df = answer_df
 
-# Human and machine data
+""" Human and machine data """
 mer_df = pd.concat([human_df, answer_df], axis=0)
 mer_df = mer_df.T
 mer_df = mer_df.fillna(0)
 orig_mer_df = mer_df
 
 
-#%%
-# Getting ready...
+""" Getting ready... """
 human_df = orig_human_df.copy()
 human_df = human_df.fillna(0)
 human_df['유저식별아이디'] = human_df['유저식별아이디'].astype(int)
@@ -221,7 +220,7 @@ mer_df3 = mer_df3[mer_df3.index != 'img']
 mer_df3 = mer_df3.T.astype(float)
 
 
-# FM
+""" FM """
 for test_type in test_type_list:
     for (model_type1, model_type2) in zip(model_type1_list, model_type2_list):
         model_type = model_type1 + model_type2
@@ -297,9 +296,7 @@ mac_df_T_gp = mac_df_T.groupby('hyperpar').mean()
 mac_df_T_gp.mean(axis=1)
 
 
-
-#%%
-# FM algorithm
+""" FM algorithm """
 fb_df = mer_df3.copy()
 
 par_list = []
