@@ -52,16 +52,18 @@ if __name__ == 'main':
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     parser = argparse.ArgumentParser()
     parser.add_argument('--test_type', type=str, default='opt') # 'opt' or 'elec' or 'normal'
-    parser.add_argument('--args.model_type1', type=str, default='opt') # 'PCA', 'PCA', 'PCA', '', '', '', '', '', '', '', '', '', ''
-    parser.add_argument('--args.model_type2', type=str, default='') # 'SVC2'(Old version) 'SVC', 'LR', 'CNN_LR', 'CNN_SVC', 'PIXEL_LR', 'PIXEL_SVC',
+    parser.add_argument('--model_type1', type=str, default='opt') # 'PCA', 'PCA', 'PCA', '', '', '', '', '', '', '', '', '', ''
+    parser.add_argument('--model_type2', type=str, default='') # 'SVC2'(Old version) 'SVC', 'LR', 'CNN_LR', 'CNN_SVC', 'PIXEL_LR', 'PIXEL_SVC',
     # 'CNN_ResNet', 'CNN_ResNet2', CNN_ResNet2_SVC', 'CNN_AlexNet', 'CNN_AlexNet2', 'CNN_AlexNet2_SVC', 'CNN_VggNet2', 'CNN_VggNet2_SVC'
     parser.add_argument('--xai', type=str, default='no') # 'yes', 'no'
-    parser.add_argument('--args.finetune', type=str, default='') # 'ft', ''
+    parser.add_argument('--finetune', type=str, default='') # 'ft', ''
     parser.add_argument('--r', type=int, default=4) # 2, 4, 16
     parser.add_argument('--meta_path', type=str, default='C:\\Users\\user\\Desktop\\210827_ANNA_Removing_uncontaminated_data.csv')
+    parser.add_argument('--train_path', type=str, default='E:\\ANNA_INTERN\\Middle_Resolution_137_unzipped_parcropped_128_removed_train')
+    parser.add_argument('--test_path', type=str, default='E:\\ANNA_INTERN\\Middle_Resolution_137_unzipped_parcropped_128')
     args = parser.parse_args()
 
-    model_type = args.args.model_type1 + args.args.model_type2
+    model_type = args.model_type1 + args.model_type2
     df = pd.read_csv(args.meta_path)
 
     l = list(range(df.shape[0]))
@@ -94,49 +96,46 @@ if __name__ == 'main':
     sets = [set_1, set_2, set_3, set_4, set_5, set_6, set_7, set_8, set_9, set_10, set_11, set_12, set_13, set_14] # 14 independent sets are ready! :)
 
 
-    train_path =  'E:\\ANNA_INTERN\\Middle_Resolution_137_unzipped_parcropped_128_removed_train' 
     if args.test_type == 'opt' or args.test_type == 'elec':
-        test_path =  f'E:\\ANNA_INTERN\\Middle_Resolution_137_unzipped_parcropped_128_{args.test_type}'
+        test_path =  f'{args.test_path}_{args.test_type}'
     elif args.test_type == 'normal':
-        test_path = 'E:\\ANNA_INTERN\\Middle_Resolution_137_unzipped_parcropped_128_removed_train'
+        test_path = f'{args.train_path}'
 
-    # test 이미지
-    camera_list = ['4','7','10'] #4(C), 정면은 7
+    # test images
+    camera_list = ['4','7','10'] #4(C)
     light_list = ['1'] #2(L)
     accessory_list =['1'] #1(S)
     expression_list = ['1','2','3'] #3(E)
 
-    # train 이미지
-    tr_camera_list = list(map(str, [4,5,6,7,8,9,10,14,15,16,17,18,19,20])) #4(C), 정면은 7
-    tr_light_list = list(map(str, [1,2,3,4,5,6, # 검은거(L7) 제거
+    # train images
+    tr_camera_list = list(map(str, [4,5,6,7,8,9,10,14,15,16,17,18,19,20])) #4(C)
+    tr_light_list = list(map(str, [1,2,3,4,5,6, # 7: all black
         8,9,10,11,12,13,14,15,16,17,18,
         19,20,21,22,23,24,25,26,27,28,29,30])) #2(L)
     tr_accessory_list =['1'] #1(S)
     tr_expression_list = ['1','2','3'] #3(E)
 
-    if args.args.model_type1 == 'PCA':
+    if args.model_type1 == 'PCA':
         ext_name1 = 'gz'
-    elif args.args.model_type1 == '':
+    elif args.model_type1 == '':
         ext_name1 = ''
 
-    if args.args.model_type2 == 'SVC2':
+    if args.model_type2 == 'SVC2':
         ext_name2 = 'gz'
-    elif args.args.model_type2 == 'LR' or args.args.model_type2 == 'SVC' or args.args.model_type2 == 'CNN_LR' or args.model_type2 == 'CNN_SVC' or args.model_type2 == 'PIXEL_LR' or args.model_type2 == 'PIXEL_SVC' or args.model_type2 == 'CNN_ResNet' or args.model_type2 == 'CNN_ResNet2' or args.model_type2 == 'CNN_ResNet2_SVC' or args.model_type2 == 'CNN_AlexNet' or args.model_type2 == 'CNN_AlexNet2' or args.model_type2 == 'CNN_AlexNet2_SVC' or args.model_type2 == 'CNN_VggNet2' or args.model_type2 == 'CNN_VggNet2_SVC':
+    elif args.model_type2 == 'LR' or args.model_type2 == 'SVC' or args.model_type2 == 'CNN_LR' or args.model_type2 == 'CNN_SVC' or args.model_type2 == 'PIXEL_LR' or args.model_type2 == 'PIXEL_SVC' or args.model_type2 == 'CNN_ResNet' or args.model_type2 == 'CNN_ResNet2' or args.model_type2 == 'CNN_ResNet2_SVC' or args.model_type2 == 'CNN_AlexNet' or args.model_type2 == 'CNN_AlexNet2' or args.model_type2 == 'CNN_AlexNet2_SVC' or args.model_type2 == 'CNN_VggNet2' or args.model_type2 == 'CNN_VggNet2_SVC':
         ext_name2 = 'pt'
 
     seed_list = [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
 
-    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu') 
 
-
-    for m in range(14): # 14개의 identically, independent distributed set
-        input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+    for m in range(14): # 14 iid set
+        input_folder = [df.iloc[i, 0] for i in sets[m]] 
         assert len(input_folder) == 16
         com_obj = itertools.combinations(input_folder, r)
         com_list = list(com_obj)
         
         for seed in seed_list:
-            for n in range(len(com_list)): # for every combination # range(178, 210, 1)
+            for n in range(len(com_list)): # for every combination of question set
 
                 data_path = f'E:\\ANNA_INTERN\\Question Banks AI Hub_final\\{args.r}classes\\set{m}\\seed{seed}'
                 preprocessed_data_path =  os.path.join(data_path, f'comb{n}')
@@ -161,7 +160,7 @@ if __name__ == 'main':
                 roc_file = os.path.join(low_analysis_path, f'ROC_{args.model_type1}_{args.model_type2}.png') # 안 씀
                 check_file = high_csv_file
 
-                if os.path.isfile(check_file) and args.xai == 'no': # 특정 조합에 대해서 맨 마지막에 저장될 파일이 이미 존재한다면,
+                if os.path.isfile(check_file) and args.xai == 'no':
                     pass
                 else:
                     print(f'\n START {m}th set {n}th comb (seed{seed}): comb{com_list[n]} \n')
@@ -175,7 +174,6 @@ if __name__ == 'main':
                     """2. Modeling"""
                     instance = beginModeling(n, args.model_type1, args.model_type2, Xtrain, ytrain, Xtest, ytest, unique_labels, model_file1, model_file2, high_csv_file, low_csv_file, auc_info_file, checkpoint_file, earlystop_file, roc_file) # INITIALIZATION
 
-                    # method 호출
                     model, Xtrain, Xtest = instance.loadOrSaveModel1() # FEATURE EXTRACTION (PART 1)
                     train_loader, val_loader, test_loader = instance.convertAndVisualData(model, Xtrain, Xtest, ytrain, ytest) # (OPTIONAL) VISUALIZATION 1|
                     ytest, yfit, yprob, mod, y_test_oh= instance.loadOrSaveModel2andEval(train_loader, val_loader, test_loader, Xtrain, Xtest, old_uniq_labels2, file_path_list) # CLASSIFICATION (PART 2)
