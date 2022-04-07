@@ -40,37 +40,25 @@ from torch.optim import Adam, SGD
 if __name__ == 'main':
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     parser = argparse.ArgumentParser()
-    parser.add_argument('--args.finetune', type=str, default='') # 'ft', ''
+    parser.add_argument('--test_type', type=str, default='opt') # 'opt' or 'elec'
+    parser.add_argument('--human_data', type=str, default='E:\\ANNA_INTERN\\Human_Exp\\211202') # 2, 4, 16
+    parser.add_argument('--machine_data', type=str, default='E:\\ANNA_INTERN\\Human_Exp\\211105_QAs_for_Set0_CNN_SVC_4classes_partial.csv') 
+    parser.add_argument('--meta_data', type=str, default='E:\\ANNA_INTERN\\210827_ANNA_Removing_uncontaminated_data.csv')
     parser.add_argument('--r', type=int, default=4) # 2, 4, 16
-    parser.add_argument('--human_data', type=str, default='E:\\ANNA_INTERN\\Human_Exp\\211202') 
-    parser.add_argument('--args.model_type1', type=str, default='opt') # 'PCA', 'PCA', 'PCA', '', '', '', '', '', '', '', '', '', ''
-    parser.add_argument('--args.model_type2', type=str, default='') # 'SVC2'(Old version) 'SVC', 'LR', 'CNN_LR', 'CNN_SVC', 'PIXEL_LR', 'PIXEL_SVC',
-    # 'CNN_ResNet', 'CNN_ResNet2', CNN_ResNet2_SVC', 'CNN_AlexNet', 'CNN_AlexNet2', 'CNN_AlexNet2_SVC', 'CNN_VggNet2', 'CNN_VggNet2_SVC'
-    parser.add_argument('--xai', type=str, default='no') # 'yes', 'no'
-    parser.add_argument('--args.finetune', type=str, default='') # 'ft', ''
-    parser.add_argument('--r', type=int, default=4) # 2, 4, 16
-    parser.add_argument('--meta_path', type=str, default='C:\\Users\\user\\Desktop\\210827_ANNA_Removing_uncontaminated_data.csv')
     args = parser.parse_args()
 
-type = 'opt' # 'opt' or 'elec'
-test_type = type
-
-
-
-if type == 'opt':
-  sel_ppl = list(range(300, 309)) + list(range(400, 408)) + [611] # 18개
-elif type == 'elec': 
-  # sel_ppl = [499, 500, 502] + list(range(504, 509)) + list(range(602, 606)) + list(range(608, 612)) # 16개 (잘한 남자랑 못한 여자 제거)
-  sel_ppl = [499, 500, 502] + list(range(503, 509)) + list(range(602, 607)) + list(range(608, 612)) # 18개
+# Human data
+if args.test_type == 'opt':
+  sel_ppl = list(range(300, 309)) + list(range(400, 408)) + [611] # 18 participants
+elif args.test_type == 'elec': 
+  sel_ppl = [499, 500, 502] + list(range(503, 509)) + list(range(602, 607)) + list(range(608, 612)) # 18 participants
 
 human_df = pd.DataFrame()
 n = 9
 for i in range(1, 80*n+1, 80):
     try:
-      # temp_df = pd.read_csv(f'C:\\Users\\user\\Desktop\\211108_ANNA_main_test_{i}.csv') 
-      # temp_df = pd.read_csv(os.path.join(human_data, f'211116_ANNA_main_test_{i}.csv'))
       j = i+79
-      temp_df = pd.read_csv(os.path.join(human_data, f'main_test({i}_{j}).xls.csv'))
+      temp_df = pd.read_csv(os.path.join(args.human_data, f'main_test({i}_{j}).xls.csv'))
       if i == 1:
         pass
       else:
@@ -79,15 +67,9 @@ for i in range(1, 80*n+1, 80):
     except:
       print(i)
 
-# temp_list = [f'선택_A_{p}' for p in range(i, n+1) ]
-# human_df = human_df[['유저식별아이디', '나이', '성별', '학력', '시력', *temp_list]]
 human_df = human_df[human_df['유저식별아이디'].isin(sel_ppl)]
-# human_df = human_df[human_df.index.isin([34, 37, 38])] # 윤서, 세인, 나민
-# new_sel_cols = [col for col in human_df.columns if col != 503 or col!= 506] # 결측치 제거
-# human_df = human_df[new_sel_cols]
 orig_human_df = human_df
 human_df = human_df.fillna(0)
-
 
 sel_col = []
 for j in range(1, 80*n+1):
@@ -98,13 +80,12 @@ human_df = human_df[sel_col]
 human_df.index = sel_ppl 
 human_df.columns = list(range(80*n))
 
-# 결측치(0) 확인 (x: 사람아이디 번호, 즉, 0이면 대답 안했거나 못했다는 의미)
+# To check outliers (zero: no answer)
 plt.hist(human_df.values, density=True)
 plt.show()
 
-# 머신 데이터 
-# answer_df = pd.read_csv(f'C:\\Users\\user\\Documents\\Namin\\210930_MCs_for_dev.csv')
-answer_df = pd.read_csv(f'E:\\ANNA_INTERN\\Human_Exp\\211105_QAs_for_Set0_CNN_SVC_4classes_partial.csv')
+# Machine data
+answer_df = pd.read_csv(args.machine_data)
 
 act_per_list, pix_list, gs_list, par_list = [], [], [], []
 for answer in answer_df['Answer']:
@@ -126,14 +107,12 @@ answer_df = answer_df.T
 
 orig_answer_df = answer_df
 
-
-# 사람과 머신 데이터
-# human_df이랑 answer_df 합치기
-
+# Human and machine data
 mer_df = pd.concat([human_df, answer_df], axis=0)
 mer_df = mer_df.T
 mer_df = mer_df.fillna(0)
 orig_mer_df = mer_df
+
 
 #%%
 # Getting ready...
@@ -153,32 +132,28 @@ acc_df.columns = [n for n in range(acc_df.shape[1])]
 acc_df = acc_df.astype(int)
 
 for q in range(acc_df.shape[1]):
-    act_per = answer_df.loc['act_per'][q] # 실제 사람 데이터
+    act_per = answer_df.loc['act_per'][q]
     for s in range(acc_df.shape[0]):
         pred_per = acc_df.iloc[s, q]
         try:
             if str(int(pred_per)) == str(int(act_per)):
-                acc_df.iloc[s, q] = 1 # modify the value of the cell (s, t)
+                acc_df.iloc[s, q] = 1 
             else:
                 acc_df.iloc[s, q] = 0
         except:
             acc_df.iloc[s, q] = 0
 
-# answer_df를 CNN_SVC의 first seed에 대한 답
-# mer_df = pd.concat([acc_df.T, answer_df.loc['act_per']], axis=1) # 720문제 * (9명의 사람 + 모델정답)
 acc_df.columns = answer_df.T['Answer']
-# acc_df = acc_df.T# .reset_index(drop=True)
-acc_df
 
-test_type_list = [type] #['opt', 'elec']
+test_type_list = [args.test_type] #['opt', 'elec']
 model_type1_list = [''] #['', ''] #['PCA', 'PCA', '', '']
 model_type2_list = ['CNN_SVC'] #['CNN_SVC', 'CNN_SVCft'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
-seed_list = [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # 일단 9개만 # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
+seed_list = [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
 pix_order_list = ['16PIX', '24PIX', '32PIX', '64PIX', '128PIX']
 gs_order_list = ['2GS', '4GS', '6GS', '8GS', '16GS']
-class_list = [16] # [2, 4, 16]
+class_list = [args.r] # [2, 4, 16]
 
-df = pd.read_csv('E:\\ANNA_INTERN\\210827_ANNA_Removing_uncontaminated_data.csv')
+df = pd.read_csv(args.meta_path)
 l = list(range(df.shape[0]))
 n = 16
 random.seed(22)
@@ -188,11 +163,11 @@ r = class_list[0]
 
 for test_type in test_type_list:
     mac_df = pd.DataFrame()
-    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list):
         model_type = model_type1 + model_type2
         for c in class_list:
-            for m in range(1): # 제일 첫 번째 set에 대해서만
-                input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+            for m in range(1):
+                input_folder = [df.iloc[i, 0] for i in sets[m]] 
                 assert len(input_folder) == 16
                 com_obj = itertools.combinations(input_folder, r)
                 com_list = list(com_obj)
@@ -204,7 +179,7 @@ for test_type in test_type_list:
                     for n in range(len(os.listdir(data_path))): # len(com_list)
                         print(seed, n)
 
-                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') # 16 classes 는 1 comb 밖에 없음.
+                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') # only 1 comb. for 16 classes
                         high_analysis_path = os.path.join(preprocessed_data_path, f'High_Analysis_{test_type}')
                         
                         add_high_df = pd.read_csv(os.path.join(high_analysis_path, f'High_Level_Data_Analysis_{model_type1}_{model_type2}.csv'))
@@ -239,45 +214,20 @@ par_list = ['S001L1E01C4', 'S001L1E01C7', 'S001L1E01C10',
             'S001L1E03C7']
 mac_df = mac_df[mac_df['hyperpar'].isin(new_hyperpar_name_list)]
 mac_df = mac_df[mac_df['par'].isin(par_list)]
-# mac_df = mac_df.groupby('img').mean().reset_index()
-
 mac_df = mac_df.pivot(index='Seed', columns='img', values='Hit Rate')
-
-mac_df
 
 mer_df3 = pd.concat([acc_df, mac_df], join='inner')
 mer_df3 = mer_df3[mer_df3.index != 'img']
-
 mer_df3 = mer_df3.T.astype(float)
 
 
-mer_df3
-
-
-#%%
 # FM
-test_type_list = [type] #['opt', 'elec']
-model_type1_list = [''] #['PCA', 'PCA', '', '']
-model_type2_list = ['CNN_SVC'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
-seed_list = [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # 일단 9개만 # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
-pix_order_list = ['16PIX', '24PIX', '32PIX', '64PIX', '128PIX']
-gs_order_list = ['2GS', '4GS', '6GS', '8GS', '16GS']
-class_list = [16] # [2, 4, 16]
-
-df = pd.read_csv('E:\\ANNA_INTERN\\210827_ANNA_Removing_uncontaminated_data.csv')
-l = list(range(df.shape[0]))
-n = 16
-random.seed(22)
-set_1 = random.sample(l, n)
-sets = [set_1]
-r = class_list[0]
-
 for test_type in test_type_list:
-    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list):
         model_type = model_type1 + model_type2
         for c in class_list:
-            for m in range(1): # 제일 첫 번째 set에 대해서만
-                input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+            for m in range(1): 
+                input_folder = [df.iloc[i, 0] for i in sets[m]] 
                 assert len(input_folder) == 16
                 com_obj = itertools.combinations(input_folder, r)
                 com_list = list(com_obj)
