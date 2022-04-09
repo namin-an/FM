@@ -10,25 +10,28 @@ PyTorch (1.9.0), NumPy (1.20.3), matplotlib (3.4.3), pandas (1.3.2), sklearn (0.
 We used K-face dataset, which can be downloaded from https://aihub.or.kr.
 
 ## Codes
-### Loading data
-* loadData.py
+#### Loading data
+> loadData.py
 
-### Training models
-* trainANNs.py
+#### Training models
+> trainANNs.py
 
-### Implementation of FM
-* fm.py
+#### Implementation of FM
+> fm.py
 
-### Plotting figures
-* visualizing_fig2.py
-* visualizing_fig3.py
-* visualizing_fig4.py
+#### Plotting figures
+> visualizing_fig2.py
+> visualizing_fig3.py
+> visualizing_fig4.py
 
-### Adaptations
-* Grad-CAM for XAI visualizations (*/pytorch_grad_cam*) from https://github.com/jacobgil/pytorch-grad-cam. <br />
-* Early-stopping (*/mypackages/pytorchtools.py*) from https://github.com/Bjarten/early-stopping-pytorch.
+#### Adaptations
+> Grad-CAM (*/pytorch_grad_cam*)[https://github.com/jacobgil/pytorch-grad-cam]   
+> Early-stopping (*/mypackages/pytorchtools.py*)[https://github.com/Bjarten/early-stopping-pytorch]
 
 ## Example run
 ```
 python3 test.py --test_type opt --model_type1 --model_type2 CNN_SVC --r 16
+```
+```
+python3 fm.py
 ```
