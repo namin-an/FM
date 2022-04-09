@@ -52,7 +52,7 @@ if __name__ == 'main':
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     parser = argparse.ArgumentParser()
     parser.add_argument('--test_type', type=str, default='opt') # 'opt' or 'elec' or 'normal'
-    parser.add_argument('--model_type1', type=str, default='opt') # 'PCA', 'PCA', 'PCA', '', '', '', '', '', '', '', '', '', ''
+    parser.add_argument('--model_type1', type=str, default='') # 'PCA', 'PCA', 'PCA', '', '', '', '', '', '', '', '', '', ''
     parser.add_argument('--model_type2', type=str, default='') # 'SVC2'(Old version) 'SVC', 'LR', 'CNN_LR', 'CNN_SVC', 'PIXEL_LR', 'PIXEL_SVC',
     # 'CNN_ResNet', 'CNN_ResNet2', CNN_ResNet2_SVC', 'CNN_AlexNet', 'CNN_AlexNet2', 'CNN_AlexNet2_SVC', 'CNN_VggNet2', 'CNN_VggNet2_SVC'
     parser.add_argument('--xai', type=str, default='no') # 'yes', 'no'
