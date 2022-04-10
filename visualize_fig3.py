@@ -148,7 +148,7 @@ acc_df
 test_type_list = [type] #['opt', 'elec']
 model_type1_list = [''] #['', ''] #['PCA', 'PCA', '', '']
 model_type2_list = ['CNN_SVC'] #['CNN_SVC', 'CNN_SVCft'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
-seed_list = [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # 일단 9개만 # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
+seed_list = [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
 pix_order_list = ['16PIX', '24PIX', '32PIX', '64PIX', '128PIX']
 gs_order_list = ['2GS', '4GS', '6GS', '8GS', '16GS']
 class_list = [16] # [2, 4, 16]
