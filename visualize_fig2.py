@@ -656,7 +656,7 @@ answer_df = answer_df.T
 orig_answer_df = answer_df
 answer_df
 
-# human_df이랑 answer_df 합치기
+# both
 mer_df = pd.concat([human_df, answer_df], axis=0)
 mer_df = mer_df.T
 mer_df = mer_df.fillna(0)
@@ -716,7 +716,6 @@ new_hyperpar_name_list = ['16PIX_2GS', '16PIX_4GS', '16PIX_8GS',
                           '32PIX_2GS', '32PIX_4GS', '32PIX_8GS',  
                           '64PIX_2GS', '64PIX_4GS', '64PIX_8GS']
 
-# 합친 그래프
 
 # ANN
 ann_df = mac_df.copy()
