@@ -25,7 +25,7 @@ We used K-face dataset, which can be downloaded from https://aihub.or.kr.
 > visualizing_fig4.py   
 
 #### Adaptations
-> Grad-CAM [*/pytorch_grad_cam*](https://github.com/jacobgil/pytorch-grad-cam)
+> Grad-CAM [*/pytorch_grad_cam*](https://github.com/jacobgil/pytorch-grad-cam)   
 > Early-stopping [*/mypackages/pytorchtools.py*](https://github.com/Bjarten/early-stopping-pytorch)
 
 ## Example run
