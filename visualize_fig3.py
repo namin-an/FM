@@ -1,9 +1,6 @@
 """
 Running this file makes visualizions of results in the paper.
 
-*Preview of this code:
-- Packages
-
 - Loading human and ANN data
 - Fig. 3a (Fig. S7a)
 - Fig. 3b 
@@ -14,35 +11,29 @@ Running this file makes visualizions of results in the paper.
 
 
 #%%
-# Packages
-
 import datetime
-date = datetime.datetime.now()
-print(f'Today is Happy{date: %A, %d, %m, %Y}.', '\n')
-
 import os
 import math
 import random 
 import itertools 
-
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import imshow
 from matplotlib.lines import Line2D
-
 import scipy
 import scipy as sp
 from scipy import stats
-from scipy.stats import norm, wilcoxon, linregress # norm.cdf와 norm.ppf(percent point function, inverse of cdf-percentiles)은 역함수 관계
+from scipy.stats import norm, wilcoxon, linregress
 import scipy.stats as sp
-
 from statannot import add_stat_annotation
 from PIL import Image
 import cv2 as cv
 from sklearn.metrics import confusion_matrix, roc_curve, auc, roc_auc_score, classification_report
 from sklearn.utils import shuffle
+from tensorflow.keras import models, layers
+        from tensorflow import keras
 
 
 
@@ -52,19 +43,13 @@ from sklearn.utils import shuffle
 # Button
 type = 'opt' # 'opt' or 'elec'
 test_type = type
-
-# 사람 데이터
 human_data = 'E:\\ANNA_INTERN\\Human_Exp\\211202'
-# human_data = 'C:\\Users\\user\\Desktop\\Human_Exp\\211124'
-# human_data = 'C:\\Users\\user\\Desktop\\Human_Exp\\211118'
-# human_data = '/content/drive/MyDrive/Human_Exp/211118'
-# sel_ppl = [92, 93] # 정현, 서연
 
 if type == 'opt':
-  sel_ppl = list(range(300, 309)) + list(range(400, 408)) + [611] # 18개
+  sel_ppl = list(range(300, 309)) + list(range(400, 408)) + [611] 
 elif type == 'elec': 
-  # sel_ppl = [499, 500, 502] + list(range(504, 509)) + list(range(602, 606)) + list(range(608, 612)) # 16개 (잘한 남자랑 못한 여자 제거)
-  sel_ppl = [499, 500, 502] + list(range(503, 509)) + list(range(602, 607)) + list(range(608, 612)) # 18개
+  # sel_ppl = [499, 500, 502] + list(range(504, 509)) + list(range(602, 606)) + list(range(608, 612)) 
+  sel_ppl = [499, 500, 502] + list(range(503, 509)) + list(range(602, 607)) + list(range(608, 612)) 
 
 human_df = pd.DataFrame()
 n = 9
@@ -82,15 +67,9 @@ for i in range(1, 80*n+1, 80):
     except:
       print(i)
 
-# temp_list = [f'선택_A_{p}' for p in range(i, n+1) ]
-# human_df = human_df[['유저식별아이디', '나이', '성별', '학력', '시력', *temp_list]]
 human_df = human_df[human_df['유저식별아이디'].isin(sel_ppl)]
-# human_df = human_df[human_df.index.isin([34, 37, 38])] # 윤서, 세인, 나민
-# new_sel_cols = [col for col in human_df.columns if col != 503 or col!= 506] # 결측치 제거
-# human_df = human_df[new_sel_cols]
 orig_human_df = human_df
 human_df = human_df.fillna(0)
-
 
 sel_col = []
 for j in range(1, 80*n+1):
@@ -101,12 +80,11 @@ human_df = human_df[sel_col]
 human_df.index = sel_ppl 
 human_df.columns = list(range(80*n))
 
-# 결측치(0) 확인 (x: 사람아이디 번호, 즉, 0이면 대답 안했거나 못했다는 의미)
+# check outliers (zeros)
 plt.hist(human_df.values, density=True)
 plt.show()
 
-# 머신 데이터 
-# answer_df = pd.read_csv(f'C:\\Users\\user\\Documents\\Namin\\210930_MCs_for_dev.csv')
+# machine data
 answer_df = pd.read_csv(f'E:\\ANNA_INTERN\\Human_Exp\\211105_QAs_for_Set0_CNN_SVC_4classes_partial.csv')
 
 act_per_list, pix_list, gs_list, par_list = [], [], [], []
@@ -130,9 +108,7 @@ answer_df = answer_df.T
 orig_answer_df = answer_df
 
 
-# 사람과 머신 데이터
-# human_df이랑 answer_df 합치기
-
+# human and machine data
 mer_df = pd.concat([human_df, answer_df], axis=0)
 mer_df = mer_df.T
 mer_df = mer_df.fillna(0)
@@ -168,10 +144,7 @@ for q in range(acc_df.shape[1]):
         except:
             acc_df.iloc[s, q] = 0
 
-# answer_df를 CNN_SVC의 first seed에 대한 답
-# mer_df = pd.concat([acc_df.T, answer_df.loc['act_per']], axis=1) # 720문제 * (9명의 사람 + 모델정답)
 acc_df.columns = answer_df.T['Answer']
-# acc_df = acc_df.T# .reset_index(drop=True)
 acc_df
 
 test_type_list = [type] #['opt', 'elec']
@@ -192,11 +165,11 @@ r = class_list[0]
 
 for test_type in test_type_list:
     mac_df = pd.DataFrame()
-    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): 
         model_type = model_type1 + model_type2
         for c in class_list:
-            for m in range(1): # 제일 첫 번째 set에 대해서만
-                input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+            for m in range(1):
+                input_folder = [df.iloc[i, 0] for i in sets[m]] 
                 assert len(input_folder) == 16
                 com_obj = itertools.combinations(input_folder, r)
                 com_list = list(com_obj)
@@ -208,7 +181,7 @@ for test_type in test_type_list:
                     for n in range(len(os.listdir(data_path))): # len(com_list)
                         print(seed, n)
 
-                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') # 16 classes 는 1 comb 밖에 없음.
+                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') 
                         high_analysis_path = os.path.join(preprocessed_data_path, f'High_Analysis_{test_type}')
                         
                         add_high_df = pd.read_csv(os.path.join(high_analysis_path, f'High_Level_Data_Analysis_{model_type1}_{model_type2}.csv'))
@@ -288,7 +261,6 @@ plt.show()
 # Fig. 3b
 
 # lm plot for dr. MI 
-
 pix_list, hyperpar_list = [], []
 for hyperpar in temp_acc_df['par']:
     pix, gs, _ = hyperpar.split('_')
@@ -343,8 +315,6 @@ plt.show()
 
 #%%
 # Fig. 3d
-from scipy import stats
-
 
 class LinearReg():
 
@@ -414,8 +384,6 @@ plt.show()
 # Fig. 3c (Fig. S7b)
 
 # Humans
-# 비확신(Humans) vs. Top-2 Accuracy (Machines) 
-
 df = orig_human_df.copy()
 
 ans_list, pix_list, gs_list, par_list = list(), list(), list(), list()
@@ -446,6 +414,7 @@ sum_tot = df.shape[0]*df.shape[1]
 a = sum_na / sum_tot * 100
 print(a)
 
+
 # Top-1 Accuracy
 
 temp_mer_df0 = orig_mer_df.copy()
@@ -455,7 +424,6 @@ for per in sel_ppl:
     d[per] = []
 pix_par_list = ['16PIX', '32PIX', '64PIX']
 gs_par_list = ['2GS', '4GS', '8GS']
-# 한 사람 당 16PIX_2GS, 16PIX_4GS, 16PIX_8GS / 32PIX_2GS, 32PIX_4GS, 32PIX_8GS / 64PIX_2GS, 64PIX_4GS, 64PIX_8GS
 
 for pix in pix_par_list:
     temp_mer_df = temp_mer_df0[temp_mer_df0['PIX'] == pix]
@@ -485,10 +453,8 @@ per_df1.columns = ['Resolution', 'Hit Rate']
 
 per_df1
 
-# Top-2 Accuracy
 
-# human_data = 'C:\\Users\\user\\Desktop\\Human_Exp\\211202'
-# sel_ppl = list(range(300, 309)) + list(range(400, 408))
+# Top-2 Accuracy
 
 human_df2 = pd.DataFrame()
 n = 9
@@ -517,7 +483,6 @@ human_df2 = human_df2[sel_col]
 human_df2.index = sel_ppl 
 human_df2.columns = list(range(80*n))
 
-# human_df이랑 answer_df 합치기
 mer_df2 = pd.concat([human_df2, answer_df], axis=0)
 mer_df2 = mer_df2.T
 mer_df2 = mer_df2.fillna(0)
@@ -529,7 +494,6 @@ for per in sel_ppl:
     d[per] = []
 pix_par_list = ['16PIX', '32PIX', '64PIX']
 gs_par_list = ['2GS', '4GS', '8GS']
-# 한 사람 당 16PIX_2GS, 16PIX_4GS, 16PIX_8GS / 32PIX_2GS, 32PIX_4GS, 32PIX_8GS / 64PIX_2GS, 64PIX_4GS, 64PIX_8GS
 
 for pix in pix_par_list:
     temp_mer_df = temp_mer_df0[temp_mer_df0['PIX'] == pix]
@@ -556,7 +520,7 @@ per_df2.index = hyperpar_name_list
 
 per_df2 = per_df2.stack().to_frame().reset_index(level=0)
 per_df2.columns = ['Resolution', 'Hit Rate']
-per_df2['Hit Rate'] = per_df1['Hit Rate'] + per_df2['Hit Rate'] # 누적값(첫번째에서 맞추고 두 번재에서 못맞춘거 인정, 첫번째에서 못 맞췄지만 두 번째에서 맞춘거 인정)
+per_df2['Hit Rate'] = per_df1['Hit Rate'] + per_df2['Hit Rate'] 
 
 per_df2
 
@@ -564,7 +528,8 @@ per_df2.groupby('Resolution').mean()
 
 
 # Prediction (TOP-1) - # 1 Linear Regression
-############################# 사람
+
+## human
 human_df = orig_human_df.copy()
 human_df = human_df.fillna(0)
 human_df['유저식별아이디'] = human_df['유저식별아이디'].astype(int)
@@ -581,7 +546,7 @@ acc_df.columns = [n for n in range(acc_df.shape[1])]
 acc_df = acc_df.astype(int)
 
 for q in range(acc_df.shape[1]):
-    act_per = answer_df.loc['act_per'][q] # 실제 사람 데이터
+    act_per = answer_df.loc['act_per'][q] 
     for s in range(acc_df.shape[0]):
         pred_per = acc_df.iloc[s, q]
         try:
@@ -592,12 +557,9 @@ for q in range(acc_df.shape[1]):
         except:
             acc_df.iloc[s, q] = 0
 
-# answer_df를 CNN_SVC의 first seed에 대한 답
-# mer_df = pd.concat([acc_df.T, answer_df.loc['act_per']], axis=1) # 720문제 * (9명의 사람 + 모델정답)
 acc_df.columns = answer_df.T['Answer']
-# acc_df = acc_df.T# .reset_index(drop=True)
 
-############################# 머신
+## machine
 test_type_list = [type] #['opt', 'elec']
 model_type1_list = [''] #['PCA', 'PCA', '', '']
 model_type2_list = ['CNN_SVC'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
@@ -617,11 +579,11 @@ r = class_list[0]
 new_seed_list = []
 for test_type in test_type_list:
     mac_df = pd.DataFrame()
-    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list):
         model_type = model_type1 + model_type2
         for c in class_list:
-            for m in range(1): # 제일 첫 번째 set에 대해서만
-                input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+            for m in range(1): 
+                input_folder = [df.iloc[i, 0] for i in sets[m]] 
                 assert len(input_folder) == 16
                 com_obj = itertools.combinations(input_folder, r)
                 com_list = list(com_obj)
@@ -634,7 +596,7 @@ for test_type in test_type_list:
                     for n in range(len(os.listdir(data_path))): # len(com_list)
                         print(seed, n)
 
-                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') # 16 classes 는 1 comb 밖에 없음.
+                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') 
                         high_analysis_path = os.path.join(preprocessed_data_path, f'High_Analysis_{test_type}')
                         
                         add_high_df = pd.read_csv(os.path.join(high_analysis_path, f'High_Level_Data_Analysis_{model_type1}_{model_type2}.csv'))
@@ -661,15 +623,11 @@ for test_type in test_type_list:
                     
                     mac_df = pd.concat([mac_df, add_high_df], axis=0)
 
-# new_hyperpar_name_list = ['16PIX_2GS', '16PIX_4GS', '16PIX_8GS', 
-#                           '32PIX_2GS', '32PIX_4GS', '32PIX_8GS',  
-#                           '64PIX_2GS', '64PIX_4GS', '64PIX_8GS']
+
 par_list = ['S001L1E01C4', 'S001L1E01C7', 'S001L1E01C10',
              'S001L1E02C7',
             'S001L1E03C7']
-#mac_df = mac_df[mac_df['hyperpar'].isin(new_hyperpar_name_list)]
 mac_df = mac_df[mac_df['par'].isin(par_list)]
-# mac_df = mac_df.groupby('img').mean().reset_index()
 
 mac_df = mac_df.pivot(index='Seed', columns='img', values='Hit Rate')
 
@@ -685,11 +643,10 @@ mac_df_T['hyperpar'] = hyper_par_list
 #mac_df_T_par = mac_df_T.iloc[:, 2]
 mac_df_T_gp = mac_df_T.groupby('hyperpar').mean()
 
-#print(mac_df_T_gp.mean(axis=1))
 
 
-############################# 둘다
-# scatter plot (feedback) # 6 -> Feedback -> 6A만 실행하고 오기
+# both
+# scatter plot (feedback) # 6 -> Feedback -> 6A
 mer_df3 = pd.concat([acc_df, mac_df], join='inner')
 mer_df3 = mer_df3[mer_df3.index != 'img']
 
@@ -772,9 +729,10 @@ new_df1.columns = ['Resolution', 'Machines', 'Humans']
 
 new_df1
 
+
 # Prediction (TOP-1) - # 2 ANN
 
-############################# 사람
+# human
 human_df = orig_human_df.copy()
 human_df = human_df.fillna(0)
 human_df['유저식별아이디'] = human_df['유저식별아이디'].astype(int)
@@ -802,12 +760,9 @@ for q in range(acc_df.shape[1]):
         except:
             acc_df.iloc[s, q] = 0
 
-# answer_df를 CNN_SVC의 first seed에 대한 답
-# mer_df = pd.concat([acc_df.T, answer_df.loc['act_per']], axis=1) # 720문제 * (9명의 사람 + 모델정답)
 acc_df.columns = answer_df.T['Answer']
-# acc_df = acc_df.T# .reset_index(drop=True)
 
-############################# 머신
+# machine
 test_type_list = [type] #['opt', 'elec']
 model_type1_list = [''] #['PCA', 'PCA', '', '']
 model_type2_list = ['CNN_SVC'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
@@ -827,11 +782,11 @@ r = class_list[0]
 new_seed_list = []
 for test_type in test_type_list:
     mac_df = pd.DataFrame()
-    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list):
         model_type = model_type1 + model_type2
         for c in class_list:
-            for m in range(1): # 제일 첫 번째 set에 대해서만
-                input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+            for m in range(1): 
+                input_folder = [df.iloc[i, 0] for i in sets[m]] 
                 assert len(input_folder) == 16
                 com_obj = itertools.combinations(input_folder, r)
                 com_list = list(com_obj)
@@ -844,7 +799,7 @@ for test_type in test_type_list:
                     for n in range(len(os.listdir(data_path))): # len(com_list)
                         print(seed, n)
 
-                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') # 16 classes 는 1 comb 밖에 없음.
+                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') 
                         high_analysis_path = os.path.join(preprocessed_data_path, f'High_Analysis_{test_type}')
                         
                         add_high_df = pd.read_csv(os.path.join(high_analysis_path, f'High_Level_Data_Analysis_{model_type1}_{model_type2}.csv'))
@@ -883,7 +838,7 @@ mac_df_ext = mac_df[mac_df['hyperpar'].isin(new_hyperpar_name_list)]
 mac_df_ext = mac_df_ext[mac_df_ext['par'].isin(par_list)]
 mac_df_ext = mac_df_ext.pivot(index='Seed', columns='img', values='Hit Rate')
 #########
-mac_df = mac_df[np.logical_not(mac_df['hyperpar'].isin(new_hyperpar_name_list))] # 사람에게 측정한 파라미터는 제외하고
+mac_df = mac_df[np.logical_not(mac_df['hyperpar'].isin(new_hyperpar_name_list))] # exclude human parameters
 mac_df = mac_df[mac_df['par'].isin(par_list)]
 # mac_df = mac_df.groupby('img').mean().reset_index()
 
@@ -920,9 +875,6 @@ class ANN():
     @staticmethod
     def create_model():
         
-        from tensorflow.keras import models, layers
-        from tensorflow import keras
-        
         model = models.Sequential()
         model.add(keras.Input(shape=(6, )))
         model.add(layers.Dense(3, activation='relu'))
@@ -933,7 +885,6 @@ class ANN():
         return model
     
     def load_model(self, model):
-        from tensorflow import keras
         
         model = keras.models.load_model(self.checkpoint_file)
         
@@ -973,6 +924,7 @@ new_df1_ann.columns = ['Resolution', 'Machines', 'Humans']
 
 new_df1_ann
 
+
 # Ext Fig. 2-1
 
 mer_df3 = pd.concat([acc_df, mac_df_ext], join='inner')
@@ -1002,6 +954,7 @@ plt.title(f'Phophene quality condition & face-attribute level')
 plt.xlabel('')
 plt.ylabel('')
 plt.show()
+
 
 # Prediction (TOP-2) - # 1 Linear Regression
 
@@ -1038,8 +991,6 @@ for q in range(acc_df1.shape[1]):
         except:
             acc_df1.iloc[s, q] = 0
 
-# answer_df를 CNN_SVC의 first seed에 대한 답
-# mer_df = pd.concat([acc_df.T, answer_df.loc['act_per']], axis=1) # 720문제 * (9명의 사람 + 모델정답)
 acc_df1.columns = answer_df.T['Answer']
 acc_df = acc_df1.T# .reset_index(drop=True)
 acc_df = acc_df.mean(axis=1).reset_index()
@@ -1053,7 +1004,7 @@ new_acc_df2 = acc_df.groupby('Resolution').mean().reset_index()
 new_acc_df2.columns = ['Resolution', 'Humans']
 
 
-############################# 머신
+## machine
 test_type_list = [type] #['opt', 'elec']
 model_type1_list = [''] #['PCA', 'PCA', '', '']
 model_type2_list = ['CNN_SVC'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
@@ -1115,11 +1066,8 @@ for test_type in test_type_list:
                         high_analysis_path = os.path.join(preprocessed_data_path, f'High_Analysis_{test_type}')
                         
                         add_high_df = pd.read_csv(os.path.join(high_analysis_path, f'High_Level_Data_Analysis_{model_type1}_{model_type2}.csv'))
-                        # add_high_df['Hit Rate'] = add_high_df['correctness'].replace(['correct', 'wrong'], [1, 0]) 
-                        # add_high_df = add_high_df[['file_name', 'actual_person', 'Hit Rate']]
-                        # add_high_df['actual_person'] = add_high_df['actual_person'].astype(int)
                         
-                        # Splitting pred_prob_vector
+                        # Split pred_prob_vector
                         d = {'p0' : [], 'p1': [], 'p2': [], 'p3': [], 'p4': [], 'p5': [], 'p6': [], 'p7': [],
                              'p8': [], 'p9': [], 'p10': [], 'p11': [], 'p12': [], 'p13': [], 'p14': [], 'p15': []}
                         
@@ -1218,9 +1166,8 @@ mac_df2['Resolution'] = hyperpar_list
 new_mac_df2 = mac_df2.groupby(['Resolution']).mean()['Machines']
 
 
-############################# 둘 다
-# scatter plot (feedback) # 6 -> Feedback -> 6A만 실행하고 오기
-# mer_df3 = pd.concat([acc_df, new_mac_df2], join='inner')
+## both
+# scatter plot (feedback) # 6 -> Feedback -> 6A
 mer_df3 = new_acc_df2.merge(new_mac_df2, on='Resolution')
 
 class LinearReg():
@@ -1261,9 +1208,10 @@ new_df2.columns = ['Resolution', 'Machines', 'Humans']
 
 new_df2
 
+
 # Prediction (TOP-2) - # 2 ANN
 
-############################# 사람
+## human
 human_df = orig_human_df.copy()
 human_df = human_df.fillna(0)
 human_df['유저식별아이디'] = human_df['유저식별아이디'].astype(int)
@@ -1291,16 +1239,13 @@ for q in range(acc_df.shape[1]):
         except:
             acc_df.iloc[s, q] = 0
 
-# answer_df를 CNN_SVC의 first seed에 대한 답
-# mer_df = pd.concat([acc_df.T, answer_df.loc['act_per']], axis=1) # 720문제 * (9명의 사람 + 모델정답)
 acc_df.columns = answer_df.T['Answer']
-# acc_df = acc_df.T# .reset_index(drop=True)
 
-############################# 머신
+## machine
 test_type_list = [type] #['opt', 'elec']
 model_type1_list = [''] #['PCA', 'PCA', '', '']
 model_type2_list = ['CNN_SVC'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
-seed_list = [22, 77, 2, 100, 81, 42, 7, 55, 50] # 일단 9개만 # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
+seed_list = [22, 77, 2, 100, 81, 42, 7, 55, 50] # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
 pix_order_list = ['16PIX', '24PIX', '32PIX', '64PIX', '128PIX']
 gs_order_list = ['2GS', '4GS', '6GS', '8GS', '16GS']
 class_list = [16] # [2, 4, 16]
@@ -1316,11 +1261,11 @@ r = class_list[0]
 new_seed_list = []
 for test_type in test_type_list:
     mac_df2 = pd.DataFrame()
-    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): 
         model_type = model_type1 + model_type2
         for c in class_list:
-            for m in range(1): # 제일 첫 번째 set에 대해서만
-                input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+            for m in range(1): 
+                input_folder = [df.iloc[i, 0] for i in sets[m]] 
                 assert len(input_folder) == 16
                 com_obj = itertools.combinations(input_folder, r)
                 com_list = list(com_obj)
@@ -1337,11 +1282,8 @@ for test_type in test_type_list:
                         high_analysis_path = os.path.join(preprocessed_data_path, f'High_Analysis_{test_type}')
                         
                         add_high_df = pd.read_csv(os.path.join(high_analysis_path, f'High_Level_Data_Analysis_{model_type1}_{model_type2}.csv'))
-                        # add_high_df['Hit Rate'] = add_high_df['correctness'].replace(['correct', 'wrong'], [1, 0]) 
-                        # add_high_df = add_high_df[['file_name', 'actual_person', 'Hit Rate']]
-                        # add_high_df['actual_person'] = add_high_df['actual_person'].astype(int)
                         
-                        # Splitting pred_prob_vector
+                        # Split pred_prob_vector
                         d = {'p0' : [], 'p1': [], 'p2': [], 'p3': [], 'p4': [], 'p5': [], 'p6': [], 'p7': [],
                              'p8': [], 'p9': [], 'p10': [], 'p11': [], 'p12': [], 'p13': [], 'p14': [], 'p15': []}
                         
@@ -1437,7 +1379,7 @@ par_list = ['S001L1E01C4', 'S001L1E01C7', 'S001L1E01C10',
             'S001L1E02C7',
             'S001L1E03C7']
 
-mac_df = mac_df2[np.logical_not(mac_df2['hyperpar'].isin(new_hyperpar_name_list))] # 사람에게 측정한 파라미터는 제외하고
+mac_df = mac_df2[np.logical_not(mac_df2['hyperpar'].isin(new_hyperpar_name_list))] # except for human parameters
 mac_df = mac_df[mac_df['par'].isin(par_list)]
 # mac_df = mac_df.groupby('img').mean().reset_index()
 
@@ -1474,9 +1416,6 @@ class ANN():
     @staticmethod
     def create_model():
         
-        from tensorflow.keras import models, layers
-        from tensorflow import keras
-        
         model = models.Sequential()
         model.add(keras.Input(shape=(6, )))
         model.add(layers.Dense(3, activation='relu'))
@@ -1487,7 +1426,6 @@ class ANN():
         return model
     
     def load_model(self, model):
-        from tensorflow import keras
         
         model = keras.models.load_model(self.checkpoint_file)
         
@@ -1588,11 +1526,11 @@ sets = [set_1]
 r = class_list[0]
 
 for test_type in test_type_list:
-    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): 
         model_type = model_type1 + model_type2
         for c in class_list:
-            for m in range(1): # 제일 첫 번째 set에 대해서만
-                input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+            for m in range(1): 
+                input_folder = [df.iloc[i, 0] for i in sets[m]]
                 assert len(input_folder) == 16
                 com_obj = itertools.combinations(input_folder, r)
                 com_list = list(com_obj)
@@ -1610,7 +1548,7 @@ for test_type in test_type_list:
                     for n in range(len(os.listdir(data_path))): # len(com_list)
                         print(seed, n)
 
-                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') # 16 classes 는 1 comb 밖에 없음.
+                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') 
                         high_analysis_path = os.path.join(preprocessed_data_path, f'High_Analysis_{test_type}')
                         
                         add_high_df = pd.read_csv(os.path.join(high_analysis_path, f'High_Level_Data_Analysis_{model_type1}_{model_type2}.csv'))
@@ -1703,11 +1641,11 @@ face_labels = [19081632,
                19072922]
 
 for test_type in test_type_list:
-    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): 
         model_type = model_type1 + model_type2
         for c in class_list:
-            for m in range(1): # 제일 첫 번째 set에 대해서만
-                input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+            for m in range(1): 
+                input_folder = [df.iloc[i, 0] for i in sets[m]] 
                 assert len(input_folder) == 16
                 com_obj = itertools.combinations(input_folder, r)
                 com_list = list(com_obj)
