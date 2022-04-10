@@ -20,13 +20,13 @@ We used K-face dataset, which can be downloaded from https://aihub.or.kr.
 > fm.py
 
 #### Plotting figures
-> visualizing_fig2.py
-> visualizing_fig3.py
-> visualizing_fig4.py
+> visualizing_fig2.py   
+> visualizing_fig3.py   
+> visualizing_fig4.py   
 
 #### Adaptations
-> Grad-CAM (*/pytorch_grad_cam*)[https://github.com/jacobgil/pytorch-grad-cam]   
-> Early-stopping (*/mypackages/pytorchtools.py*)[https://github.com/Bjarten/early-stopping-pytorch]
+> Grad-CAM [*/pytorch_grad_cam*](https://github.com/jacobgil/pytorch-grad-cam)
+> Early-stopping [*/mypackages/pytorchtools.py*](https://github.com/Bjarten/early-stopping-pytorch)
 
 ## Example run
 ```
