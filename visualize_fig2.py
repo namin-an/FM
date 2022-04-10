@@ -1,9 +1,6 @@
 """
 Running this file makes visualizions of results in the paper.
 
-*Preview of this code:
-- Packages
-
 - Fig. 2a (Fig. S5a, Fig. S6a)
 - Fig. 2b (Fig. S5c, Fig. S5d, Fig. S6c, Fig. S6d)
 - Fig. 2c (Fig. S5e, Fig. S5f, Fig. S6e, Fig. S6f, Fig. S6g)
@@ -14,30 +11,23 @@ Running this file makes visualizions of results in the paper.
 
 
 #%%
-# Packages
-
 import datetime
-date = datetime.datetime.now()
-print(f'Today is Happy{date: %A, %d, %m, %Y}.', '\n')
-
 import os
 import math
 import random 
 import itertools 
-
+from itertools import combinations
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import imshow
 from matplotlib.lines import Line2D
-
 import scipy
 import scipy as sp
 from scipy import stats
-from scipy.stats import norm, wilcoxon, linregress # norm.cdf와 norm.ppf(percent point function, inverse of cdf-percentiles)은 역함수 관계
+from scipy.stats import norm, wilcoxon, linregress
 import scipy.stats as sp
-
 from statannot import add_stat_annotation
 from PIL import Image
 import cv2 as cv
@@ -74,9 +64,6 @@ for test_type in test_type_list:
                 except:
                     print(model_type, seed, 'error')
                     pass
-                # if model_type2 == 'CNN_ResNet2':
-                #     jay = high_df.mean(axis=0)
-                #     print(seed, jay['hit_rate'])
                 
         image_list = []
         for i, file_name in enumerate(high_df['file_name']):
@@ -87,7 +74,7 @@ for test_type in test_type_list:
         high_df = high_df[['image', 'hit_rate']]
 
         old_high_df_cols = high_df.columns
-        new_high_df_cols = [f'{model_type}_' + col_name for (i, col_name) in enumerate(old_high_df_cols) if i != 0] # file_name 제외하고 나머지에 모델 이름 앞에 달아주기
+        new_high_df_cols = [f'{model_type}_' + col_name for (i, col_name) in enumerate(old_high_df_cols) if i != 0]
         new_high_df_cols = [old_high_df_cols.tolist()[0], *new_high_df_cols]
         high_df.columns = new_high_df_cols
 
@@ -124,7 +111,6 @@ for test_type in test_type_list:
         elif model_type == 'CNN_AlexNet2ft':
             cnn_alexnetft_high_df = high_df    
 
-# 나중에 시각화할 순서
 model_list = [
               pixel_svc_high_df, pixel_lr_high_df,
               pca_svc_high_df, pca_lr_high_df,
@@ -140,7 +126,7 @@ model_name_list = [
                    'CNN_AlexNet2_SVC', 'CNN_AlexNet2',
                    'CNN_VggNet2_SVC', 'CNN_VggNet2', 
                    'CNN_ResNet2_SVC', 'CNN_ResNet2',
-                   'CNN_SVCft', 'CNN_AlexNet2ft'] # 위와 순서 일치해야 함.
+                   'CNN_SVCft', 'CNN_AlexNet2ft'] # same order as the above list
 temp_high_df = model_list[0].merge(model_list[1], on='image')
 for i in range(2, len(model_list)):
     temp_high_df = temp_high_df.merge(model_list[i], on='image')
@@ -186,18 +172,6 @@ pal =  ["#bbd17b", "#bbd17b",
         ] # add more colors
 
 if test_type == 'opt' or test_type == 'elec':
-    # hyperpar_name_list = ['16PIX_2GS', '16PIX_4GS', '16PIX_6GS', '16PIX_8GS', '16PIX_16GS', 
-    #                       '24PIX_2GS', '24PIX_4GS', '24PIX_6GS', '24PIX_8GS', '24PIX_16GS', 
-    #                       '32PIX_2GS', '32PIX_4GS', '32PIX_6GS', '32PIX_8GS', '32PIX_16GS', 
-    #                       '64PIX_2GS', '64PIX_4GS', '64PIX_6GS', '64PIX_8GS', '64PIX_16GS', 
-    #                       '128PIX_2GS', '128PIX_4GS', '128PIX_6GS', '128PIX_8GS', '128PIX_16GS']
-    # plt.figure(figsize=(30, 5))
-    # sns.barplot(x='hyperpar', y='Hit Rate', hue='Models', data=temp_high_df2, order=hyperpar_name_list)
-
-    # plt.legend(bbox_to_anchor=(1, 0.5))
-    # sns.despine()
-    # plt.xticks(rotation=90)
-    # plt.show()
 
     pix_name_list = ['16PIX', '24PIX', '32PIX', '64PIX', '128PIX']
     cri_len = len(pix_name_list) * 2
@@ -208,7 +182,7 @@ if test_type == 'opt' or test_type == 'elec':
     for (i, onebar) in enumerate(plot.patches):
         if i % cri_len == 0:
             j = j+1
-        k = i - cri_len*(j-1) # 각 par마다 mod cri_len
+        k = i - cri_len*(j-1) # for each parameter
         if k >= (cri_len//2):
             clr = onebar.get_facecolor()
             onebar.set_edgecolor(clr)
@@ -251,8 +225,7 @@ elif test_type == 'normal':
     for (i, onebar) in enumerate(plot.patches):
         if i % len(model_name_list) == 0:
             j = j+1
-        i = i - len(model_name_list)*(j-1) # 각 par마다 mod cri_len
-        #if i >= (cri_len//2): # for classifier LR (not SVC)
+        i = i - len(model_name_list)*(j-1)
         if i % 2 != 0 and i != len(model_name_list)-1:
             clr = onebar.get_facecolor()
             onebar.set_edgecolor(clr)
@@ -270,6 +243,7 @@ elif test_type == 'normal':
 
 #%%
 # Fig. 2b
+
 test_type_list = ['elec'] #['opt', 'elec']
 set_type1_list = [''] #['PCA', 'PCA', '', '']
 set_type2_list = ['CNN_SVC'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
@@ -279,15 +253,14 @@ gs_order_list = ['2GS', '4GS', '6GS', '8GS', '16GS']
 
 
 for test_type in test_type_list:
-    for (set_type1, set_type2) in zip(set_type1_list, set_type2_list): # 제일 첫 번째 set에 대해서만
+    for (set_type1, set_type2) in zip(set_type1_list, set_type2_list): # for the first set only
         set_type = set_type1 + '_' + set_type2
  
-        high_df = pd.DataFrame() # variable 초기화
+        high_df = pd.DataFrame() # initialize variables
         for m in range(14):
-            # seed = random.choice(seed_list) # For each set, we have random seed.
             for seed in seed_list:
                 data_path = f'E:\\ANNA_INTERN\\Question Banks AI Hub_final\\16classes\\set{m}\\seed{seed}'
-                preprocessed_data_path =  os.path.join(data_path, 'comb0') # 16 classes 는 1 comb 밖에 없음.
+                preprocessed_data_path =  os.path.join(data_path, 'comb0') # only one combination for 16 classes
 
                 high_analysis_path = os.path.join(preprocessed_data_path, f'High_Analysis_{test_type}')
                 high_file_path = os.path.join(high_analysis_path, f'High_Level_Data_Analysis_{set_type}.csv')
@@ -299,9 +272,7 @@ for test_type in test_type_list:
                     add_high_df = add_high_df[['file_name', 'hit_rate', 'Set']]
                     add_high_df['seed'] = [seed] * add_high_df.shape[0]
                     
-                    high_df = pd.concat([high_df, add_high_df], axis=0)
-                    
-                    # globals()[f'df{m}'] = high_df               
+                    high_df = pd.concat([high_df, add_high_df], axis=0) 
                 else:
                     print(set_type, m, seed, 'error')
                     pass
@@ -332,15 +303,6 @@ temp_high_df['PIX'] = pd.Categorical(temp_high_df['PIX'], categories=pix_name_li
 
 g = sns.scatterplot(x='Set', y='hit_rate', hue='PIX', data=temp_high_df,
                    palette='rocket') #, marker='s')
-            #   markers=['o', 'o', 'o', 'o', 'o',
-            #            '^', '^', '^', '^', '^',
-            #            'v', 'v', 'v', 'v', 'v',
-            #            's', 's', 's', 's', 's',
-            #            '*', '*', '*', '*', '*']) # errwidth=1, capsize=0.2, markers='^', 
-# points = g.collections[0]
-# size = points.get_sizes().item()
-# new_sizes = [size / 3]
-# points.set_sizes(new_sizes)
 avg_high_df = temp_high_df.groupby('Set').mean().reset_index()
 avg_high_df.columns = ['Set', 'hit_rate', 'Seed']
 h = sns.lineplot(data=avg_high_df, x='Set', y='hit_rate', color=sns.color_palette('mako_r', 7)[1], linewidth=5, alpha=0.5)
@@ -354,7 +316,6 @@ plt.ylabel('Hit Rate')
 plt.savefig('C:\\Users\\user\\Desktop\\Fig.3-2.png')
 plt.show()
 
-from itertools import combinations
 
 l = list(set(temp_high_df['Set'].values))
 set_com_list = list(combinations(l, 2))
@@ -371,7 +332,6 @@ for (i, set_num) in enumerate(set_com_list):
     com2 = com2['hit_rate'].astype(float).values
     
     statistic, pvalue = scipy.stats.mannwhitneyu(x=com1, y=com2, use_continuity=False, alternative='two-sided')
-    #if pvalue < 0.1: # and (set_num == 0 or set_num == 7): # Set 1과 통계적으로 유의미한 차이가 있는 set들에 대해서
     pvalue = '{:.2e}'.format(pvalue)
     pvalue = float(pvalue)
     if set_num1 == '10' or set_num2 == '10':
@@ -389,6 +349,7 @@ for (i, set_num) in enumerate(set_com_list):
 
 #%%
 # Fig. 2c
+
 test_type_list = ['elec'] #['opt', 'elec']
 model_type1_list = [''] #['PCA', 'PCA', '', '']
 model_type2_list = ['CNN_SVC'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
@@ -398,10 +359,10 @@ gs_order_list = ['2GS', '4GS', '6GS', '8GS', '16GS']
 class_list = [2, 4, 16]
 
 for test_type in test_type_list:
-    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # only the first model
         model_type = model_type1 + model_type2
         for c in class_list:
-            for m in range(1): # 제일 첫 번째 set에 대해서만
+            for m in range(1): # only the first set
                 high_df = pd.DataFrame()
                 for seed in seed_list:
                     # seed = random.choice(seed_list) # For each set, we have random seed.
@@ -409,7 +370,7 @@ for test_type in test_type_list:
                     try:
                         for n in range(len(os.listdir(data_path))):
                             print(c, seed, n)
-                            preprocessed_data_path =  os.path.join(data_path, f'comb{n}') # 16 classes 는 1 comb 밖에 없음.
+                            preprocessed_data_path =  os.path.join(data_path, f'comb{n}') 
 
                             high_analysis_path = os.path.join(preprocessed_data_path, f'High_Analysis_{test_type}')
                             
@@ -433,7 +394,7 @@ for test_type in test_type_list:
                         break
 
                 old_high_df_cols = high_df.columns
-                new_high_df_cols = [f'{c}_' + col_name for (i, col_name) in enumerate(old_high_df_cols) if i != 0] # file_name 제외하고 나머지에 모델 이름 앞에 달아주기
+                new_high_df_cols = [f'{c}_' + col_name for (i, col_name) in enumerate(old_high_df_cols) if i != 0] 
                 new_high_df_cols = [old_high_df_cols.tolist()[0], *new_high_df_cols]
                 high_df.columns = new_high_df_cols
 
@@ -564,26 +525,19 @@ for i in com_class_list:
 # Fig. 2d
 
 type = 'opt' # 'opt' or 'elec'
-
-# 사람 데이터
 human_data = 'E:\\ANNA_INTERN\\Human_Exp\\211202'
-# human_data = 'C:\\Users\\user\\Desktop\\Human_Exp\\211124'
-# human_data = 'C:\\Users\\user\\Desktop\\Human_Exp\\211118'
-# human_data = '/content/drive/MyDrive/Human_Exp/211118'
 # sel_ppl = [92, 93] # 정현, 서연
 
 if type == 'opt':
-  sel_ppl = list(range(300, 309)) + list(range(400, 408)) + [611] # 18개
+  sel_ppl = list(range(300, 309)) + list(range(400, 408)) + [611] # 18 ppl
 elif type == 'elec': 
-  # sel_ppl = [499, 500, 502] + list(range(504, 509)) + list(range(602, 606)) + list(range(608, 612)) # 16개 (잘한 남자랑 못한 여자 제거)
-  sel_ppl = [499, 500, 502] + list(range(503, 509)) + list(range(602, 607)) + list(range(608, 612)) # 18개
+  # sel_ppl = [499, 500, 502] + list(range(504, 509)) + list(range(602, 606)) + list(range(608, 612)) # 16 ppl (remove two outliers)
+  sel_ppl = [499, 500, 502] + list(range(503, 509)) + list(range(602, 607)) + list(range(608, 612)) # 18 ppl
 
 human_df = pd.DataFrame()
 n = 9
 for i in range(1, 80*n+1, 80):
     try:
-      # temp_df = pd.read_csv(f'C:\\Users\\user\\Desktop\\211108_ANNA_main_test_{i}.csv') 
-      # temp_df = pd.read_csv(os.path.join(human_data, f'211116_ANNA_main_test_{i}.csv'))
       j = i+79
       temp_df = pd.read_csv(os.path.join(human_data, f'main_test({i}_{j}).xls.csv'))
       if i == 1:
@@ -594,12 +548,7 @@ for i in range(1, 80*n+1, 80):
     except:
       print(i)
 
-# temp_list = [f'선택_A_{p}' for p in range(i, n+1) ]
-# human_df = human_df[['유저식별아이디', '나이', '성별', '학력', '시력', *temp_list]]
 human_df = human_df[human_df['유저식별아이디'].isin(sel_ppl)]
-# human_df = human_df[human_df.index.isin([34, 37, 38])] # 윤서, 세인, 나민
-# new_sel_cols = [col for col in human_df.columns if col != 503 or col!= 506] # 결측치 제거
-# human_df = human_df[new_sel_cols]
 orig_human_df = human_df
 human_df = human_df.fillna(0)
 
@@ -614,7 +563,7 @@ human_df.index = sel_ppl
 human_df.columns = list(range(80*n))
 
 
-# 머신 데이터
+# machine data
 test_type_list = ['opt']
 model_type1_list = [''] #['PCA', 'PCA', '', '']
 model_type2_list = ['CNN_SVC'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
@@ -632,11 +581,11 @@ sets = [set_1]
 r = class_list[0]
 
 for test_type in test_type_list:
-    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): 
         model_type = model_type1 + model_type2
         for c in class_list:
-            for m in range(1): # 제일 첫 번째 set에 대해서만
-                input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+            for m in range(1): 
+                input_folder = [df.iloc[i, 0] for i in sets[m]] 
                 assert len(input_folder) == 16
                 com_obj = itertools.combinations(input_folder, r)
                 com_list = list(com_obj)
@@ -654,7 +603,7 @@ for test_type in test_type_list:
                         for n in range(len(os.listdir(data_path))): # len(com_list)
                             print(seed, n)
 
-                            preprocessed_data_path =  os.path.join(data_path, f'comb{n}') # 16 classes 는 1 comb 밖에 없음.
+                            preprocessed_data_path =  os.path.join(data_path, f'comb{n}') 
                             high_analysis_path = os.path.join(preprocessed_data_path, f'High_Analysis_{test_type}')
                             
                             add_high_df = pd.read_csv(os.path.join(high_analysis_path, f'High_Level_Data_Analysis_{model_type1}_{model_type2}.csv'))
@@ -683,7 +632,6 @@ for test_type in test_type_list:
                     mac_df = pd.concat([mac_df, temp_df], axis=0)
                 #high_df = high_df.groupby('image').mean().reset_index()
 
-# answer_df = pd.read_csv(f'C:\\Users\\user\\Documents\\Namin\\210930_MCs_for_dev.csv')
 answer_df = pd.read_csv(f'E:\\ANNA_INTERN\\Human_Exp\\211105_QAs_for_Set0_CNN_SVC_4classes_partial.csv')
 
 n = 9
@@ -727,7 +675,6 @@ for per in sel_ppl:
     d[per] = []
 pix_par_list = ['16PIX', '32PIX', '64PIX']
 gs_par_list = ['2GS', '4GS', '8GS']
-# 한 사람 당 16PIX_2GS, 16PIX_4GS, 16PIX_8GS / 32PIX_2GS, 32PIX_4GS, 32PIX_8GS / 64PIX_2GS, 64PIX_4GS, 64PIX_8GS
 
 for pix in pix_par_list:
     temp_mer_df1 = temp_mer_df0[temp_mer_df0['PIX'] == pix]
@@ -785,7 +732,7 @@ hum_df['Resolution'] = pd.Categorical(hum_df['Resolution'], categories=new_hyper
 hum_df = hum_df[hum_df['Seed'].isin(sel_ppl)]
 
 
-# Plotting graph
+# Plot graphs
 ann_hum_df = [ann_df, hum_df]
 palette_list = [sns.color_palette('Blues', len(list(set(list(ann_df['Seed'].values))))), sns.color_palette('Reds', len(list(set(list(hum_df['Seed'].values)))))]
                 
