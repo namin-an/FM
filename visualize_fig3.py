@@ -55,8 +55,6 @@ human_df = pd.DataFrame()
 n = 9
 for i in range(1, 80*n+1, 80):
     try:
-      # temp_df = pd.read_csv(f'C:\\Users\\user\\Desktop\\211108_ANNA_main_test_{i}.csv') 
-      # temp_df = pd.read_csv(os.path.join(human_data, f'211116_ANNA_main_test_{i}.csv'))
       j = i+79
       temp_df = pd.read_csv(os.path.join(human_data, f'main_test({i}_{j}).xls.csv'))
       if i == 1:
