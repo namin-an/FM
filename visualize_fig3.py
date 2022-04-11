@@ -561,7 +561,7 @@ acc_df.columns = answer_df.T['Answer']
 test_type_list = [type] #['opt', 'elec']
 model_type1_list = [''] #['PCA', 'PCA', '', '']
 model_type2_list = ['CNN_SVC'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
-seed_list = [22, 77, 2, 100, 81, 42, 7, 55, 50] # 일단 9개만 # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
+seed_list = [22, 77, 2, 100, 81, 42, 7, 55, 50] # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
 pix_order_list = ['16PIX', '24PIX', '32PIX', '64PIX', '128PIX']
 gs_order_list = ['2GS', '4GS', '6GS', '8GS', '16GS']
 class_list = [16] # [2, 4, 16]
@@ -764,7 +764,7 @@ acc_df.columns = answer_df.T['Answer']
 test_type_list = [type] #['opt', 'elec']
 model_type1_list = [''] #['PCA', 'PCA', '', '']
 model_type2_list = ['CNN_SVC'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
-seed_list = [22, 77, 2, 100, 81, 42, 7, 55, 50] # 일단 9개만 # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
+seed_list = [22, 77, 2, 100, 81, 42, 7, 55, 50] # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
 pix_order_list = ['16PIX', '24PIX', '32PIX', '64PIX', '128PIX']
 gs_order_list = ['2GS', '4GS', '6GS', '8GS', '16GS']
 class_list = [16] # [2, 4, 16]
@@ -977,7 +977,7 @@ acc_df2.columns = [n for n in range(acc_df2.shape[1])]
 acc_df2 = acc_df2.astype(int)
 
 for q in range(acc_df1.shape[1]):
-    act_per = answer_df.loc['act_per'][q] # 실제 사람 데이터
+    act_per = answer_df.loc['act_per'][q]
     for s in range(acc_df1.shape[0]):
         pred_per1 = acc_df1.iloc[s, q]
         pred_per2 = acc_df2.iloc[s, q]
@@ -1006,7 +1006,7 @@ new_acc_df2.columns = ['Resolution', 'Humans']
 test_type_list = [type] #['opt', 'elec']
 model_type1_list = [''] #['PCA', 'PCA', '', '']
 model_type2_list = ['CNN_SVC'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
-seed_list = [22, 77, 2, 100, 81, 42, 7, 55, 50] # 일단 9개만 # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
+seed_list = [22, 77, 2, 100, 81, 42, 7, 55, 50] # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
 pix_order_list = ['16PIX', '24PIX', '32PIX', '64PIX', '128PIX']
 gs_order_list = ['2GS', '4GS', '6GS', '8GS', '16GS']
 class_list = [16] # [2, 4, 16]
@@ -1037,11 +1037,11 @@ face_labels = [19081632,
 
 new_seed_list = []
 for test_type in test_type_list:
-    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): 
         model_type = model_type1 + model_type2
         for c in class_list:
-            for m in range(1): # 제일 첫 번째 set에 대해서만
-                input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+            for m in range(1): 
+                input_folder = [df.iloc[i, 0] for i in sets[m]] 
                 assert len(input_folder) == 16
                 com_obj = itertools.combinations(input_folder, r)
                 com_list = list(com_obj)
@@ -1226,7 +1226,7 @@ acc_df.columns = [n for n in range(acc_df.shape[1])]
 acc_df = acc_df.astype(int)
 
 for q in range(acc_df.shape[1]):
-    act_per = answer_df.loc['act_per'][q] # 실제 사람 데이터
+    act_per = answer_df.loc['act_per'][q] 
     for s in range(acc_df.shape[0]):
         pred_per = acc_df.iloc[s, q]
         try:
@@ -1510,7 +1510,7 @@ df.groupby('PIX').mean()
 test_type_list = [type]
 model_type1_list = ['PCA'] #['PCA', 'PCA', '', '']
 model_type2_list = ['SVC'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
-seed_list = [22, 77, 2, 100, 81, 42, 7, 55, 50] # 일단 9개만 # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
+seed_list = [22, 77, 2, 100, 81, 42, 7, 55, 50] # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
 pix_order_list = ['16PIX', '24PIX', '32PIX', '64PIX', '128PIX']
 gs_order_list = ['2GS', '4GS', '6GS', '8GS', '16GS']
 class_list = [16] # [2, 4, 16]
@@ -1609,7 +1609,7 @@ plt.show()
 test_type_list = [type]
 model_type1_list = ['PCA'] #['PCA', 'PCA', '', '']
 model_type2_list = ['LR'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
-seed_list = [22, 77, 2, 100, 81, 42, 7, 55, 50] # 일단 9개만 # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
+seed_list = [22, 77, 2, 100, 81, 42, 7, 55, 50] # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
 pix_order_list = ['16PIX', '24PIX', '32PIX', '64PIX', '128PIX']
 gs_order_list = ['2GS', '4GS', '6GS', '8GS', '16GS']
 class_list = [16] # [2, 4, 16]
