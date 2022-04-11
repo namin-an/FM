@@ -50,10 +50,10 @@ for test_type in test_type_list:
         model_type = model_type1 + model_type2
 
         high_df = pd.DataFrame()
-        for m in range(1): # 제일 첫 번째 set에 대해서만
+        for m in range(1): 
             for seed in seed_list:
                 data_path = f'E:\\ANNA_INTERN\\Question Banks AI Hub_final\\16classes\\set{m}\\seed{seed}'
-                preprocessed_data_path =  os.path.join(data_path, 'comb0') # 16 classes 는 1 comb 밖에 없음.
+                preprocessed_data_path =  os.path.join(data_path, 'comb0') 
 
                 high_analysis_path = os.path.join(preprocessed_data_path, f'High_Analysis_{test_type}')
                 try:
@@ -526,7 +526,6 @@ for i in com_class_list:
 
 type = 'opt' # 'opt' or 'elec'
 human_data = 'E:\\ANNA_INTERN\\Human_Exp\\211202'
-# sel_ppl = [92, 93] # 정현, 서연
 
 if type == 'opt':
   sel_ppl = list(range(300, 309)) + list(range(400, 408)) + [611] # 18 ppl
