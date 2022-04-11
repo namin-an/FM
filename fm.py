@@ -35,6 +35,10 @@ from torch.utils.data import DataLoader, Dataset, random_split, TensorDataset
 from torch.autograd import Variable
 from torch.nn import Linear, ReLU, CrossEntropyLoss, MultiMarginLoss, Sequential, Conv2d, MaxPool2d, Module, Softmax, BatchNorm2d, Dropout, AdaptiveAvgPool2d
 from torch.optim import Adam, SGD
+from tensorflow import keras
+from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
+from tensorflow.keras import models, layers
+    
 
 
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
@@ -383,9 +387,6 @@ y_train = df[[f'Human_{i}' for i in par_list]]
 
 print(X_train.shape, y_train.shape)
 
-from tensorflow.keras import models, layers
-from tensorflow import keras
-
 model = models.Sequential()
 model.add(keras.Input(shape=(6, )))
 model.add(layers.Dense(4, activation='relu'))
@@ -394,10 +395,6 @@ model.add(layers.Dense(5, activation='relu'))
 
 print(model.summary())
 
-from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
-import time
-from tensorflow import keras
-    
 checkpoint_filepath = 'Chcekpoints_FB/Checkpoint_4.h5'
 #if os.path.isfile(checkpoint_filepath):
 #    model = keras.models.load_model(checkpoint_filepath)
