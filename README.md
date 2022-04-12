@@ -2,13 +2,13 @@
 Na Min An, Hyeonhee Roh, Sein Kim, Jae Hun Kim, and Maesoon Im
 
 ## Main figure
-<p align="center" width="100%"><img src="https://github.com/namin-an/FM/blob/main/images/Fig1.png"></img></p>   
+<p align="center" width="100%"><img src="https://github.com/namin-an/FM/blob/main/images/fig1.png"></img></p>   
 🌃: https://pixabay.com
 🌁: https://www.flaticon.com
 <br />
 
 ## Abstract video
-[![IMAGE ALT TEXT](https://github.com/namin-an/FM/blob/main/images/Fig1.png)](http://www.youtube.com/watch?v=D_LBBQEsQYw)
+[![IMAGE ALT TEXT](https://github.com/namin-an/FM/blob/main/images/cover.png)](https://www.youtube.com/watch?v=kHdlyUNurds)
 <br />
 
 ## Dependencies
