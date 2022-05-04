@@ -38,11 +38,3 @@ We used K-face dataset, which can be downloaded from https://aihub.or.kr.
 > Grad-CAM [*/pytorch_grad_cam*](https://github.com/jacobgil/pytorch-grad-cam)   
 > Early-stopping [*/mypackages/pytorchtools.py*](https://github.com/Bjarten/early-stopping-pytorch)
 <br />
-
-## Example run
-```
-python3 test.py --test_type opt --model_type1 --model_type2 CNN_SVC --r 16
-```
-```
-python3 fm.py
-```
