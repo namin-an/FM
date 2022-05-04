@@ -19,22 +19,26 @@ PyTorch (1.9.0), NumPy (1.20.3), matplotlib (3.4.3), pandas (1.3.2), sklearn (0.
 We used K-face dataset, which can be downloaded from https://aihub.or.kr.
 <br />
 
-## Codes
-#### Loading data
-> loadData.py
+## Code structure
 
-#### Training models
-> trainANNs.py
+### Train and test models
+├── test.py
+│   ├── loadData.py
+│   │   ├── loadData
+│   │   ├── visualizeData
+│   ├── trainANNs.py
+│   │   ├── beginModeling
 
-#### Implementation of FM
-> fm.py
 
-#### Plotting figures
-> visualizing_fig2.py   
-> visualizing_fig3.py   
-> visualizing_fig4.py   
+### Visualize results
+├── visualizing_fig2.py  
+├── visualizing_fig3.py 
+├── visualizing_fig4.py 
+├── fm.py 
 
-#### Adaptations
+### Adaptations
 > Grad-CAM [*/pytorch_grad_cam*](https://github.com/jacobgil/pytorch-grad-cam)   
 > Early-stopping [*/mypackages/pytorchtools.py*](https://github.com/Bjarten/early-stopping-pytorch)
 <br />
+
+If you have any questions or comments regarding the code, please do not hesitate to contact me through my email: **namin0202@gmail.com**
