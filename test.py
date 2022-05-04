@@ -1,5 +1,4 @@
 import datetime
-# date = datetime.datetime.now()
 import os
 import gc
 import time
@@ -24,7 +23,6 @@ import sklearn
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 from sklearn.svm import SVC, LinearSVC
-#from sklearn.linear_model import SGDClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, roc_curve, auc, roc_auc_score
@@ -43,7 +41,6 @@ from torch.autograd import Variable
 from torch.nn import Linear, ReLU, CrossEntropyLoss, MultiMarginLoss, Sequential, Conv2d, MaxPool2d, Module, Softmax, BatchNorm2d, Dropout, AdaptiveAvgPool2d
 from torch.optim import Adam, SGD
 
-from mypackages import pytorchtools 
 from loadData import loadData, visualizeData
 from trainANNs import beginModeling
 
@@ -75,6 +72,7 @@ if __name__ == 'main':
     l_20304050_f = list(df.loc[df['성별'] == '여'].index)
     l_20304050_m = list(df.loc[df['성별'] == '남'].index)
     n = 16
+    r = 4
 
     random.seed(22)
     set_1 = random.sample(l, n)
@@ -156,9 +154,9 @@ if __name__ == 'main':
                 earlystop_file = os.path.join(model_path, f'Early_Stop_{args.model_type2}{args.finetune}.{ext_name2}') # for PCA_LR, CNN_LR, CNN_SVC
                 high_csv_file = os.path.join(high_analysis_path, f'High_Level_Data_Analysis_{args.model_type1}_{args.model_type2}{args.finetune}.csv')
                 
-                low_csv_file = os.path.join(low_analysis_path, f'Classification Report_{args.model_type1}_{args.model_type2}.csv') # 안 씀 
-                auc_info_file = os.path.join(low_analysis_path, f'TP_FP_AUC_Dictionary_{args.model_type1}_{args.model_type2}.csv') # 안 씀
-                roc_file = os.path.join(low_analysis_path, f'ROC_{args.model_type1}_{args.model_type2}.png') # 안 씀
+                low_csv_file = os.path.join(low_analysis_path, f'Classification Report_{args.model_type1}_{args.model_type2}.csv') 
+                auc_info_file = os.path.join(low_analysis_path, f'TP_FP_AUC_Dictionary_{args.model_type1}_{args.model_type2}.csv') 
+                roc_file = os.path.join(low_analysis_path, f'ROC_{args.model_type1}_{args.model_type2}.png') 
                 check_file = high_csv_file
 
                 if os.path.isfile(check_file) and args.xai == 'no':
@@ -173,7 +171,7 @@ if __name__ == 'main':
                     unique_labels = tr_unique_items
 
                     """2. Modeling"""
-                    instance = beginModeling(n, args.model_type1, args.model_type2, Xtrain, ytrain, Xtest, ytest, unique_labels, model_file1, model_file2, high_csv_file, low_csv_file, auc_info_file, checkpoint_file, earlystop_file, roc_file) # INITIALIZATION
+                    instance = beginModeling(device, args.model_type1, args.model_type2, Xtrain, ytrain, Xtest, ytest, unique_labels, model_file1, model_file2, high_csv_file, low_csv_file, auc_info_file, checkpoint_file, earlystop_file, roc_file) # INITIALIZATION
 
                     model, Xtrain, Xtest = instance.loadOrSaveModel1() # FEATURE EXTRACTION (PART 1)
                     train_loader, val_loader, test_loader = instance.convertAndVisualData(model, Xtrain, Xtest, ytrain, ytest) # (OPTIONAL) VISUALIZATION 1|
