@@ -22,19 +22,22 @@ We used K-face dataset, which can be downloaded from https://aihub.or.kr.
 ## Code structure
 
 ### Train and test models
+```
 ├── test.py  
 │   ├── loadData.py  
 │   │   ├── loadData  
 │   │   ├── visualizeData  
 │   ├── trainANNs.py  
 │   │   ├── beginModeling  
-
+```
 
 ### Visualize results
+```
 ├── visualizing_fig2.py  
 ├── visualizing_fig3.py  
 ├── visualizing_fig4.py  
 ├── fm.py  
+```
 
 ### Adaptations
 > Grad-CAM [*/pytorch_grad_cam*](https://github.com/jacobgil/pytorch-grad-cam)   
