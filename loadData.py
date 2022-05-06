@@ -1,47 +1,9 @@
-import datetime
-# date = datetime.datetime.now()
 import os
-import gc
 import time
 import random
-from random import sample
-import itertools
-import argparse
-
-from PIL import Image, ImageOps
+from PIL import Image
 import numpy as np 
-import matplotlib
 import matplotlib.pyplot as plt 
-import pandas as pd
-from pandas import DataFrame
-import json # instead of "Pickle" and "Joblib"
-import joblib
-import gzip
-import collections
-import cv2 as cv
-import seaborn as sns
-import sklearn
-from sklearn.manifold import TSNE
-from sklearn.decomposition import PCA
-from sklearn.svm import SVC, LinearSVC
-#from sklearn.linear_model import SGDClassifier
-from sklearn.pipeline import make_pipeline
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, roc_curve, auc, roc_auc_score
-import skimage
-from skimage import color, io, viewer
-from skimage.color import label2rgb
-import tensorflow as tf
-import torch
-import torchvision
-import torch.nn as nn
-import torchvision.transforms as T
-import torch.nn.functional as F
-from torchvision.utils import make_grid, save_image
-from torch.utils.data import DataLoader, Dataset, random_split, TensorDataset
-from torch.autograd import Variable
-from torch.nn import Linear, ReLU, CrossEntropyLoss, MultiMarginLoss, Sequential, Conv2d, MaxPool2d, Module, Softmax, BatchNorm2d, Dropout, AdaptiveAvgPool2d
-from torch.optim import Adam, SGD
 
 
 def loadData(com_list_n, which_data_mode, train_path, test_path, ft_path, is_finetune, test_type, accessory_list, light_list, expression_list, camera_list, seed, r, model_type2):
