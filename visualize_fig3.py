@@ -11,7 +11,6 @@ Running this file makes visualizions of results in the paper.
 
 
 #%%
-import datetime
 import os
 import math
 import random 
@@ -19,22 +18,10 @@ import itertools
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import matplotlib.pyplot as plt
-from matplotlib.pyplot import imshow
-from matplotlib.lines import Line2D
-import scipy
-import scipy as sp
 from scipy import stats
-from scipy.stats import norm, wilcoxon, linregress
-import scipy.stats as sp
-from statannot import add_stat_annotation
-from PIL import Image
-import cv2 as cv
-from sklearn.metrics import confusion_matrix, roc_curve, auc, roc_auc_score, classification_report
-from sklearn.utils import shuffle
+import matplotlib.pyplot as plt
 from tensorflow.keras import models, layers
-        from tensorflow import keras
-
+from tensorflow import keras
 
 
 #%%
