@@ -27,7 +27,6 @@ from tensorflow import keras
 #%%
 # Loading human and ANN data
 
-# Button
 type = 'opt' # 'opt' or 'elec'
 test_type = type
 human_data = 'E:\\ANNA_INTERN\\Human_Exp\\211202'
@@ -35,7 +34,6 @@ human_data = 'E:\\ANNA_INTERN\\Human_Exp\\211202'
 if type == 'opt':
   sel_ppl = list(range(300, 309)) + list(range(400, 408)) + [611] 
 elif type == 'elec': 
-  # sel_ppl = [499, 500, 502] + list(range(504, 509)) + list(range(602, 606)) + list(range(608, 612)) 
   sel_ppl = [499, 500, 502] + list(range(503, 509)) + list(range(602, 607)) + list(range(608, 612)) 
 
 human_df = pd.DataFrame()
@@ -65,9 +63,6 @@ human_df = human_df[sel_col]
 human_df.index = sel_ppl 
 human_df.columns = list(range(80*n))
 
-# check outliers (zeros)
-plt.hist(human_df.values, density=True)
-plt.show()
 
 # machine data
 answer_df = pd.read_csv(f'E:\\ANNA_INTERN\\Human_Exp\\211105_QAs_for_Set0_CNN_SVC_4classes_partial.csv')
@@ -118,7 +113,7 @@ acc_df.columns = [n for n in range(acc_df.shape[1])]
 acc_df = acc_df.astype(int)
 
 for q in range(acc_df.shape[1]):
-    act_per = answer_df.loc['act_per'][q] # 실제 사람 데이터
+    act_per = answer_df.loc['act_per'][q]
     for s in range(acc_df.shape[0]):
         pred_per = acc_df.iloc[s, q]
         try:
@@ -201,6 +196,119 @@ par_list = ['S001L1E01C4', 'S001L1E01C7', 'S001L1E01C10',
             'S001L1E03C7']
 mac_df = mac_df[mac_df['hyperpar'].isin(new_hyperpar_name_list)]
 mac_df = mac_df[mac_df['par'].isin(par_list)]
+
+mac_df = mac_df.pivot(index='Seed', columns='img', values='Hit Rate')
+
+mer_df3 = pd.concat([acc_df, mac_df], join='inner')
+mer_df3 = mer_df3[mer_df3.index != 'img']
+
+mer_df3 = mer_df3.T.astype(float)
+
+
+mer_df3
+
+human_df = orig_human_df.copy()
+human_df = human_df.fillna(0)
+human_df['유저식별아이디'] = human_df['유저식별아이디'].astype(int)
+human_df.index = human_df['유저식별아이디']
+
+sel_col = []
+for (i, col) in enumerate(human_df.columns):
+    split = col.split('_')
+    if split[0] == '선택' and split[1] == 'A':
+        sel_col.append(col)
+    
+acc_df = human_df[sel_col]
+acc_df.columns = [n for n in range(acc_df.shape[1])]
+acc_df = acc_df.astype(int)
+
+for q in range(acc_df.shape[1]):
+    act_per = answer_df.loc['act_per'][q] # 실제 사람 데이터
+    for s in range(acc_df.shape[0]):
+        pred_per = acc_df.iloc[s, q]
+        try:
+            if str(int(pred_per)) == str(int(act_per)):
+                acc_df.iloc[s, q] = 1 # modify the value of the cell (s, t)
+            else:
+                acc_df.iloc[s, q] = 0
+        except:
+            acc_df.iloc[s, q] = 0
+
+# answer_df를 CNN_SVC의 first seed에 대한 답
+# mer_df = pd.concat([acc_df.T, answer_df.loc['act_per']], axis=1) # 720문제 * (9명의 사람 + 모델정답)
+acc_df.columns = answer_df.T['Answer']
+# acc_df = acc_df.T# .reset_index(drop=True)
+acc_df
+
+test_type_list = [type] #['opt', 'elec']
+model_type1_list = [''] #['', ''] #['PCA', 'PCA', '', '']
+model_type2_list = ['CNN_SVC'] #['CNN_SVC', 'CNN_SVCft'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
+seed_list = [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # 일단 9개만 # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
+pix_order_list = ['16PIX', '24PIX', '32PIX', '64PIX', '128PIX']
+gs_order_list = ['2GS', '4GS', '6GS', '8GS', '16GS']
+class_list = [16] # [2, 4, 16]
+
+df = pd.read_csv('E:\\ANNA_INTERN\\210827_ANNA_Removing_uncontaminated_data.csv')
+l = list(range(df.shape[0]))
+n = 16
+random.seed(22)
+set_1 = random.sample(l, n)
+sets = [set_1]
+r = class_list[0]
+
+for test_type in test_type_list:
+    mac_df = pd.DataFrame()
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+        model_type = model_type1 + model_type2
+        for c in class_list:
+            for m in range(1): # 제일 첫 번째 set에 대해서만
+                input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+                assert len(input_folder) == 16
+                com_obj = itertools.combinations(input_folder, r)
+                com_list = list(com_obj)
+
+               # mac_df = pd.DataFrame()
+                for seed in seed_list:
+                    data_path = f'E:\\ANNA_INTERN\\Question Banks AI Hub_final\\{c}classes\\set{m}\\seed{seed}'
+
+                    for n in range(len(os.listdir(data_path))): # len(com_list)
+                        print(seed, n)
+
+                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') # 16 classes 는 1 comb 밖에 없음.
+                        high_analysis_path = os.path.join(preprocessed_data_path, f'High_Analysis_{test_type}')
+                        
+                        add_high_df = pd.read_csv(os.path.join(high_analysis_path, f'High_Level_Data_Analysis_{model_type1}_{model_type2}.csv'))
+                        add_high_df['Hit Rate'] = add_high_df['correctness'].replace(['correct', 'wrong'], [1, 0]) 
+                        add_high_df = add_high_df[['file_name', 'actual_person', 'Hit Rate']]
+                        add_high_df['actual_person'] = add_high_df['actual_person'].astype(int)
+                        
+                        img_list, hyperpar_list, par_list = [], [], []
+                        for i in range(add_high_df.shape[0]):
+                            file_name = add_high_df['file_name'][i].split('.')[0]
+                            pix, gs, par = file_name.split('_')
+                            per = add_high_df['actual_person'][i]
+                            img = str(per) + '_' + str(pix) + '_' + str(gs) + '_' + str(par) + '.jpg'
+                            img_list.append(img)
+                            hyperpar_list.append(str(pix) + '_' + str(gs))
+                            par_list.append(str(par))
+                        add_high_df['img'] = img_list
+                        add_high_df['hyperpar'] = hyperpar_list
+                        add_high_df['par'] = par_list
+                        
+                        add_high_df = add_high_df[['img', 'hyperpar', 'par', 'Hit Rate']]
+                    
+                    add_high_df['Seed'] = [seed] * add_high_df.shape[0] #[f'{model_type}_{seed}'] * add_high_df.shape[0]
+                    
+                    mac_df = pd.concat([mac_df, add_high_df], axis=0)
+
+new_hyperpar_name_list = ['16PIX_2GS', '16PIX_4GS', '16PIX_8GS', 
+                          '32PIX_2GS', '32PIX_4GS', '32PIX_8GS',  
+                          '64PIX_2GS', '64PIX_4GS', '64PIX_8GS']
+par_list = ['S001L1E01C4', 'S001L1E01C7', 'S001L1E01C10',
+             'S001L1E02C7',
+            'S001L1E03C7']
+mac_df = mac_df[mac_df['hyperpar'].isin(new_hyperpar_name_list)]
+mac_df = mac_df[mac_df['par'].isin(par_list)]
 # mac_df = mac_df.groupby('img').mean().reset_index()
 
 mac_df = mac_df.pivot(index='Seed', columns='img', values='Hit Rate')
@@ -212,8 +320,97 @@ mer_df3 = mer_df3[mer_df3.index != 'img']
 
 mer_df3 = mer_df3.T.astype(float)
 
-
 mer_df3
+
+test_type_list = [type] #['opt', 'elec']
+model_type1_list = [''] #['PCA', 'PCA', '', '']
+model_type2_list = ['CNN_SVC'] #['SVC', 'LR', 'CNN_LR', 'CNN_SVC']
+seed_list = [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # 일단 9개만 # [22, 77, 2, 100, 81, 42, 7, 1, 55, 50] # different 1,000 training images (total of 10 permutations)
+pix_order_list = ['16PIX', '24PIX', '32PIX', '64PIX', '128PIX']
+gs_order_list = ['2GS', '4GS', '6GS', '8GS', '16GS']
+class_list = [16] # [2, 4, 16]
+
+df = pd.read_csv('E:\\ANNA_INTERN\\210827_ANNA_Removing_uncontaminated_data.csv')
+l = list(range(df.shape[0]))
+n = 16
+random.seed(22)
+set_1 = random.sample(l, n)
+sets = [set_1]
+r = class_list[0]
+
+for test_type in test_type_list:
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+        model_type = model_type1 + model_type2
+        for c in class_list:
+            for m in range(1): # 제일 첫 번째 set에 대해서만
+                input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+                assert len(input_folder) == 16
+                com_obj = itertools.combinations(input_folder, r)
+                com_list = list(com_obj)
+
+                mac_df = pd.DataFrame()
+                for seed in seed_list:
+                    data_path = f'E:\\ANNA_INTERN\\Question Banks AI Hub_final\\{c}classes\\set{m}\\seed{seed}'
+
+                    for n in range(len(os.listdir(data_path))): # len(com_list)
+                        print(seed, n)
+
+                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') # 16 classes 는 1 comb 밖에 없음.
+                        high_analysis_path = os.path.join(preprocessed_data_path, f'High_Analysis_{test_type}')
+                        
+                        add_high_df = pd.read_csv(os.path.join(high_analysis_path, f'High_Level_Data_Analysis_{model_type1}_{model_type2}.csv'))
+                        add_high_df['Hit Rate'] = add_high_df['correctness'].replace(['correct', 'wrong'], [1, 0]) 
+                        add_high_df = add_high_df[['file_name', 'actual_person', 'Hit Rate']]
+                        add_high_df['actual_person'] = add_high_df['actual_person'].astype(int)
+                        
+                        img_list, hyperpar_list, par_list = [], [], []
+                        for i in range(add_high_df.shape[0]):
+                            file_name = add_high_df['file_name'][i].split('.')[0]
+                            pix, gs, par = file_name.split('_')
+                            per = add_high_df['actual_person'][i]
+                            img = str(per) + '_' + str(pix) + '_' + str(gs) + '_' + str(par) + '.jpg'
+                            img_list.append(img)
+                            hyperpar_list.append(str(pix) + '_' + str(gs))
+                            par_list.append(str(par))
+                        add_high_df['img'] = img_list
+                        add_high_df['hyperpar'] = hyperpar_list
+                        add_high_df['par'] = par_list
+                        
+                        add_high_df = add_high_df[['img', 'hyperpar', 'par', 'Hit Rate']]
+                    
+                    add_high_df['Seed'] = [seed] * add_high_df.shape[0]
+                    
+                    mac_df = pd.concat([mac_df, add_high_df], axis=0)
+
+new_hyperpar_name_list = ['16PIX_2GS', '16PIX_4GS', '16PIX_6GS', '16PIX_8GS', '16PIX_16GS',
+                          '24PIX_2GS', '24PIX_4GS', '24PIX_6GS', '24PIX_8GS', '24PIX_16GS',
+                          '32PIX_2GS', '32PIX_4GS', '32PIX_6GS', '32PIX_8GS', '32PIX_16GS',
+                          '64PIX_2GS', '64PIX_4GS', '64PIX_6GS', '64PIX_8GS', '64PIX_16GS',
+                          '128PIX_2GS', '128PIX_4GS', '128PIX_6GS', '128PIX_8GS', '128PIX_16GS']
+par_list = ['S001L1E01C4', 'S001L1E01C7', 'S001L1E01C10',
+             'S001L1E02C7',
+            'S001L1E03C7']
+mac_df = mac_df[mac_df['hyperpar'].isin(new_hyperpar_name_list)]
+mac_df = mac_df[mac_df['par'].isin(par_list)]
+# mac_df = mac_df.groupby('img').mean().reset_index()
+
+mac_df = mac_df.pivot(index='Seed', columns='img', values='Hit Rate')
+
+mac_df
+
+mac_df_copy = mac_df.copy()
+
+mac_df_T = mac_df_copy.T
+
+hyper_par_list = []
+for img in mac_df_T.index:
+    _, pix, gs, _ = img.split('_')
+    hyper_par_list.append(f'{pix}_{gs}')
+mac_df_T['hyperpar'] = hyper_par_list
+#mac_df_T_par = mac_df_T.iloc[:, 2]
+mac_df_T_gp = mac_df_T.groupby('hyperpar').mean()
+
+mac_df_T_gp.mean(axis=1)
 
 #%%
 # Fig. 3a (Fig. S7a)
@@ -245,7 +442,6 @@ plt.show()
 #%%
 # Fig. 3b
 
-# lm plot for dr. MI 
 pix_list, hyperpar_list = [], []
 for hyperpar in temp_acc_df['par']:
     pix, gs, _ = hyperpar.split('_')
@@ -255,8 +451,6 @@ for hyperpar in temp_acc_df['par']:
 temp_acc_df['Pixels'] = pix_list
 temp_acc_df['hyperpar'] = hyperpar_list
 temp_acc_df['Color'] = ['0'] * temp_acc_df.shape[0]
-
-#temp_acc_df = temp_acc_df.reset_index()
 
 temp_acc_df.columns = temp_acc_df.columns.astype(str)
 
@@ -336,6 +530,34 @@ for i in range(df.shape[0]):
 new_df = pd.DataFrame.from_dict(diction).T#.reset_index()
 new_df.columns = ['Machines', 'Humans']
 new_df
+
+# scatter plot (feedback) # 6 -> Feedback -> 6A만 실행하고 오기
+
+pix_list, hyperpar_list = [], []
+for hyperpar in temp_acc_df.index:
+    pix, gs = hyperpar.split('_')
+    pix_list.append(pix)
+    hyperpar_list.append(hyperpar)
+    
+temp_acc_df['Pixels'] = pix_list
+temp_acc_df['hyperpar'] = hyperpar_list
+
+temp_acc_df.columns = temp_acc_df.columns.astype(str)
+
+# People
+sel_ppl_str = list(str(per) for per in sel_ppl)
+ppl_df = temp_acc_df[sel_ppl_str]
+ppl_df_avg = ppl_df.mean(axis=1)
+
+# Machines
+sel_mac_str = list(str(per) for per in seed_list)
+mac_df = temp_acc_df[sel_mac_str]
+mac_df_avg = mac_df.mean(axis=1)
+
+mer_avg = pd.concat([ppl_df_avg, mac_df_avg], axis=1)
+mer_avg.columns = ['Humans', 'Machines']
+mer_avg = mer_avg.reset_index()
+mer_avg
 
 hyperpar_list = []
 for hyperpar in mer_avg['hyperpar']:
@@ -734,7 +956,7 @@ acc_df.columns = [n for n in range(acc_df.shape[1])]
 acc_df = acc_df.astype(int)
 
 for q in range(acc_df.shape[1]):
-    act_per = answer_df.loc['act_per'][q] # 실제 사람 데이터
+    act_per = answer_df.loc['act_per'][q] 
     for s in range(acc_df.shape[0]):
         pred_per = acc_df.iloc[s, q]
         try:
