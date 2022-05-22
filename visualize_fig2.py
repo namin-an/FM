@@ -1,10 +1,10 @@
 """
 Running this file makes visualizions of results in the paper.
 
-- Fig. 2a (Fig. S5a, Fig. S6a)
-- Fig. 2b (Fig. S5c, Fig. S5d, Fig. S6c, Fig. S6d)
-- Fig. 2c (Fig. S5e, Fig. S5f, Fig. S6e, Fig. S6f, Fig. S6g)
-- Fig. 2d (Fig. S5g, Fig. S6h, Fig. S6i)
+- Fig. 2a (Fig. S5a, Ext. Fig. 1a)
+- Fig. 2b (Fig. S5c, Fig. S5d, Ext. Fig. 1c, Ext. Fig. 1d)
+- Fig. 2c (Fig. S5e, Fig. S5f, Ext. Fig. 1e, Ext. Fig. 1f, Ext. Fig. 1g)
+- Fig. 2d (Fig. S5g, Ext. Fig. 1h, Ext. Fig. 1i)
 
 """
 

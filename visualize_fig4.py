@@ -2,7 +2,7 @@
 Running this file makes visualizions of results in the paper.
 
 - Loading human and ANN data
-- Fig. 4a (Fig. S8a, Fig. S8b)
+- Fig. 4a (Fig. S6a, Fig. S6b)
 - Fig. 4b
 """
 
@@ -152,11 +152,11 @@ sets = [set_1]
 r = class_list[0]
 
 for test_type in test_type_list:
-    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): 
         model_type = model_type1 + model_type2
         for c in class_list:
-            for m in range(1): # 제일 첫 번째 set에 대해서만
-                input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+            for m in range(1): 
+                input_folder = [df.iloc[i, 0] for i in sets[m]] 
                 assert len(input_folder) == 16
                 com_obj = itertools.combinations(input_folder, r)
                 com_list = list(com_obj)
@@ -168,7 +168,7 @@ for test_type in test_type_list:
                     for n in range(len(os.listdir(data_path))): # len(com_list)
                         print(seed, n)
 
-                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') # 16 classes 는 1 comb 밖에 없음.
+                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') 
                         high_analysis_path = os.path.join(preprocessed_data_path, f'High_Analysis_{test_type}')
                         
                         add_high_df = pd.read_csv(os.path.join(high_analysis_path, f'High_Level_Data_Analysis_{model_type1}_{model_type2}.csv'))

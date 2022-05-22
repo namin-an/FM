@@ -2,9 +2,9 @@
 Running this file makes visualizions of results in the paper.
 
 - Loading human and ANN data
-- Fig. 3a (Fig. S7a)
+- Fig. 3a (Ext. Fig. 2a)
 - Fig. 3b 
-- Fig. 3c (Fig. S7b)
+- Fig. 3c (Ext. Fig. 2b)
 - Fig. 3d
 """
 
@@ -258,11 +258,11 @@ r = class_list[0]
 
 for test_type in test_type_list:
     mac_df = pd.DataFrame()
-    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): 
         model_type = model_type1 + model_type2
         for c in class_list:
             for m in range(1): # 제일 첫 번째 set에 대해서만
-                input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+                input_folder = [df.iloc[i, 0] for i in sets[m]] 
                 assert len(input_folder) == 16
                 com_obj = itertools.combinations(input_folder, r)
                 com_list = list(com_obj)
@@ -339,11 +339,11 @@ sets = [set_1]
 r = class_list[0]
 
 for test_type in test_type_list:
-    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): # 제일 첫 번째 model에 대해서만
+    for (model_type1, model_type2) in zip(model_type1_list, model_type2_list): 
         model_type = model_type1 + model_type2
         for c in class_list:
-            for m in range(1): # 제일 첫 번째 set에 대해서만
-                input_folder = [df.iloc[i, 0] for i in sets[m]] # 무조건 16명의 사람
+            for m in range(1): 
+                input_folder = [df.iloc[i, 0] for i in sets[m]] 
                 assert len(input_folder) == 16
                 com_obj = itertools.combinations(input_folder, r)
                 com_list = list(com_obj)
@@ -355,7 +355,7 @@ for test_type in test_type_list:
                     for n in range(len(os.listdir(data_path))): # len(com_list)
                         print(seed, n)
 
-                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') # 16 classes 는 1 comb 밖에 없음.
+                        preprocessed_data_path =  os.path.join(data_path, f'comb{n}') 
                         high_analysis_path = os.path.join(preprocessed_data_path, f'High_Analysis_{test_type}')
                         
                         add_high_df = pd.read_csv(os.path.join(high_analysis_path, f'High_Level_Data_Analysis_{model_type1}_{model_type2}.csv'))
@@ -566,7 +566,7 @@ for hyperpar in mer_avg['hyperpar']:
 mer_avg['hyperpar'] = hyperpar_list
 mer_avg_gp = mer_avg.groupby('hyperpar').mean().reset_index()
 
-g = sns.lmplot(data=mer_avg_gp, x='Machines', y='Humans', ci=None, palette='rocket', hue='hyperpar') #, palette='rocket', hue='hyperpar') # hue_order
+g = sns.lmplot(data=mer_avg_gp, x='Machines', y='Humans', ci=None, palette='rocket', hue='hyperpar') 
 for ax in g.axes.ravel():
     ax.plot((0, 1), (0, 1), color='gray', lw=1, linestyle='--')
 
@@ -578,7 +578,7 @@ y = slope*x + intercept
 print(f'y={slope}x+{intercept}')
 plt.plot(x, y, '-r', label=f'y={slope}x+{intercept}', alpha=0.5)
 
-sns.scatterplot(x='Machines', y='Humans', data=new_df, color='r', alpha=0.5, s=150, marker='+') #, legend = False)
+sns.scatterplot(x='Machines', y='Humans', data=new_df, color='r', alpha=0.5, s=150, marker='+') 
     
 plt.xlim([0, 1])
 plt.ylim([0, 1])
