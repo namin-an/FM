@@ -217,7 +217,7 @@ mer_df3 = mer_df3.T.astype(float)
 mer_df3
 
 #%%
-# Fig. 4a (Fig. S8a, Fig. S8b)
+# Fig. 4a (Fig. S6a, Fig. S6b)
 
 test_type_list = [test_type] #['opt', 'elec']
 model_type1_list = ['', '', '', '', '', '', '', '', 'PCA', 'PCA'] #['PCA', 'PCA', '', '']

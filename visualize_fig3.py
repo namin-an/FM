@@ -413,7 +413,7 @@ mac_df_T_gp = mac_df_T.groupby('hyperpar').mean()
 mac_df_T_gp.mean(axis=1)
 
 #%%
-# Fig. 3a (Fig. S7a)
+# Fig. 3a (Ext. Fig. 2a)
 
 temp_acc_df = mer_df3.copy()
 
@@ -588,7 +588,7 @@ plt.show()
 
 
 #%%
-# Fig. 3c (Fig. S7b)
+# Fig. 3c (Ext. Fig. 2b)
 
 # Humans
 df = orig_human_df.copy()

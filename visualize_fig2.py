@@ -27,7 +27,7 @@ from statannot import add_stat_annotation
 
 
 #%%
-# Fig. 2a (Fig. S5a, Fig. S6a)
+# Fig. 2a (Fig. S5a, Ext. Fig. 1a)
 
 test_type_list = ['normal'] #'opt' for Fig. 2a, 'normal' for Fig. S5a, 'elec' for Fig. S6a
 model_type1_list = ['', '', '', '', '', '', '', '', '', '', 'PCA', 'PCA', '', ''] #['PCA', 'PCA', '', '']
@@ -232,7 +232,7 @@ elif test_type == 'normal':
 
 
 #%%
-# Fig. 2b
+# Fig. 2b (Fig. S5c, Fig. S5d, Ext. Fig. 1c, Ext. Fig. 1d)
 
 test_type_list = ['elec'] #['opt', 'elec']
 set_type1_list = [''] #['PCA', 'PCA', '', '']
@@ -316,7 +316,7 @@ for (i, set_num) in enumerate(set_com_list):
     set_num1 = str(set_num[0])
     set_num2 = str(set_num[1])
     
-    com1 = new_temp_high_df[new_temp_high_df['Set'] == set_num1] # 225개 (5*5*9)
+    com1 = new_temp_high_df[new_temp_high_df['Set'] == set_num1] # 225 (5*5*9)
     com2 = new_temp_high_df[new_temp_high_df['Set'] == set_num2]    
     com1 = com1['hit_rate'].astype(float).values
     com2 = com2['hit_rate'].astype(float).values
@@ -338,7 +338,7 @@ for (i, set_num) in enumerate(set_com_list):
 
 
 #%%
-# Fig. 2c
+# Fig. 2c (Fig. S5e, Fig. S5f, Ext. Fig. 1e, Ext. Fig. 1f, Ext. Fig. 1g)
 
 test_type_list = ['elec'] #['opt', 'elec']
 model_type1_list = [''] #['PCA', 'PCA', '', '']
@@ -388,7 +388,7 @@ for test_type in test_type_list:
                 new_high_df_cols = [old_high_df_cols.tolist()[0], *new_high_df_cols]
                 high_df.columns = new_high_df_cols
 
-                high_df = pd.DataFrame(high_df.groupby('image').mean().reset_index()) # reset_index to bring 'file_name' to one of the columns.
+                high_df = pd.DataFrame(high_df.groupby('image').mean().reset_index()) 
                 high_df = high_df[['image', f'{c}_hit_rate']]
 
                 if c == 2:
@@ -512,7 +512,7 @@ for i in com_class_list:
 
 
 #%%
-# Fig. 2d
+# Fig. 2d (Fig. S5g, Ext. Fig. 1h, Ext. Fig. 1i)
 
 type = 'opt' # 'opt' or 'elec'
 human_data = 'E:\\ANNA_INTERN\\Human_Exp\\211202'
